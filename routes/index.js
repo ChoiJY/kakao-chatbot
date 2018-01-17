@@ -33,9 +33,7 @@ router.get('/', function (req, res, next) {
 
 // keyboard init
 router.get('/keyboard', function (req, res) {
-    res.json({
-        "keyboard": keyboard_text
-    });
+    res.json(keyboard_text);
 });
 
 // autoreply imp
