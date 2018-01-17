@@ -37,7 +37,7 @@ router.get('/keyboard', function (req, res) {
 });
 
 // autoreply imp
-router.get('/message', function (req, res) {
+router.post('/message', function (req, res) {
     var selected = req.body.content;
     // 입력 문자열에 숫자가 포함이면 숫자라고 전제
     // "31안녕42 313145" 같은 경우 3142313145로 가정
