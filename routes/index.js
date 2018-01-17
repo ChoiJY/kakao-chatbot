@@ -34,7 +34,6 @@ router.get('/', function (req, res, next) {
 // keyboard init
 router.get('/keyboard', function (req, res) {
     res.json({
-        "message": "안녕하세요 숫자야구게임 입니다. 게임을 시작하시길 원하면 '나 숫자야구 게임 할래'를 입력해주세요",
         "keyboard": keyboard_text
     });
 });
