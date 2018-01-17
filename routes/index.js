@@ -142,7 +142,7 @@ router.post('/message', function (req, res) {
             else {
                 res.json({
                     "message": {
-                        "text": "숫자를 입력해주세요"
+                        "text": "현재 점수는, "+ count+ "회 도전에 " + strike + " :Strike" + ball + "Ball" + out + "Out 입니다."
                     },
                     "keyboard": keyboard_btn
                 })
