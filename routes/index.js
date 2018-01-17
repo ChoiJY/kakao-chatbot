@@ -33,7 +33,10 @@ router.get('/', function (req, res, next) {
 
 // keyboard init
 router.get('/keyboard', function (req, res) {
-    res.json(keyboard_text);
+    res.json({
+        "message":"안녕하세요 숫자야구게임 입니다. 게임을 시작하시길 원하면 '나 숫자야구 게임 할래'를 입력해주세요",
+        "keyboard":keyboard_text
+    });
 });
 
 // autoreply imp
@@ -71,6 +74,14 @@ router.post('/message', function (req, res) {
                     "message": message_hello,
                     "keyboard": keyboard_btn
                 });
+            }
+            else if (selected == "처음으로 돌아가기" || selected == "처음으로") {
+                res.json({
+                    "message": {
+                        "text": "처음으로 돌아갑니다"
+                    },
+                    "keyboard": keyboard_text
+                })
             }
             else if (selected == "숫자 입력") {
                 res.json({
@@ -116,6 +127,9 @@ router.post('/message', function (req, res) {
         else {
             var userAry = [, , ,];
             // 입력 숫자
+            strike = 0;
+            ball = 0;
+            out = 0;
             for (var i = 0; i < 4; i++) {
                 userAry[i] = Math.floor(tempStr / Math.pow(10, 4 - i));
             }
@@ -142,7 +156,10 @@ router.post('/message', function (req, res) {
             else {
                 res.json({
                     "message": {
-                        "text": "현재 점수는, "+ count+ "회 도전에 " + strike + " :Strike" + ball + "Ball" + out + "Out 입니다."
+                        "text": "현재 점수는, " + count + "회 도전\n"
+                                + strike + " :Strike\n "
+                                + ball + ":Ball\n"
+                                + out + "Out 입니다."
                     },
                     "keyboard": keyboard_btn
                 })
