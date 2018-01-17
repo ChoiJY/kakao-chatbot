@@ -52,7 +52,7 @@ router.post('/message', function (req, res) {
         tempAry.sort();
         for (var i = 1; i < tempAry.length; i++) {
             // 같은 숫자 반복
-            if (tempAry[i] - tempAry[i - 1] == 0) {
+            if (parseInt(tempAry[i]) - parseInt(tempAry[i - 1]) == 0) {
                 break;
             }
             if (i == tempAry.length - 1) {
@@ -146,7 +146,7 @@ router.post('/message', function (req, res) {
         if (strike == 4) {
             res.json({
                 "message": {
-                    "text": "정답입니다!! 총 " + count + "번 만에 맞추셨네요"
+                    "text": "정답입니다!! "+ranNum+" \n총 " + count + "번 만에 맞추셨네요"
                 },
                 "keyboard": {
                     "type": "buttons",
@@ -157,7 +157,7 @@ router.post('/message', function (req, res) {
         else {
             res.json({
                 "message": {
-                    "text": "현재 점수는, " + count + "회 도전\n"
+                    "text": ranNum+"\n현재 점수는, " + count + "회 도전\n"
                     + strike + " :Strike\n "
                     + ball + ":Ball\n"
                     + out + "Out 입니다."
