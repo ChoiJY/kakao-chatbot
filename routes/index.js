@@ -130,7 +130,8 @@ router.post('/message', function (req, res) {
         ball = 0;
         out = 0;
         for (var i = 0; i < 4; i++) {
-            userAry[i] = Math.floor(tempStr / Math.pow(10, 4 - i));
+            userAry[i] = Math.floor(tempStr / Math.pow(10, 3 - i));
+            tempStr = (tempStr % Math.pow(10, 3 - i));
         }
         for (var i = 0; i < 4; i++) {
             // strike / ball
@@ -155,7 +156,7 @@ router.post('/message', function (req, res) {
         else {
             res.json({
                 "message": {
-                    "text": ranNum + " | "+ userAry +
+                    "text": ranNum + " | " + userAry +
                     "\n현재 점수는, " + count + "회 도전\n"
                     + strike + " :Strike\n"
                     + ball + ":Ball\n"
@@ -177,14 +178,14 @@ function makeRandomNumber() {
     for (var i = 0; i < output.length; i++) {
         output[i] = getRandomIntInclusive(0, 9);
     }
-    console.log("raw output : "+output);
+    console.log("raw output : " + output);
     temp = output.slice(output.begin, output.end);
     temp.sort();
-    console.log("why sorted : "+output);
+    console.log("why sorted : " + output);
     for (var i = 1; i < temp.length; i++) {
         // 같은 숫자 반복
         if (temp[i] == temp[i - 1]) {
-            console.log("temp  "+ i +"와 i-1 중복 발생: " + temp);
+            console.log("temp  " + i + "와 i-1 중복 발생: " + temp);
             return makeRandomNumber();
         }
         if (i == (temp.length - 1)) return output;
