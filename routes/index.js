@@ -38,7 +38,7 @@ router.get('/keyboard', function (req, res) {
 router.post('/message', function (req, res) {
     var selected = req.body.content;
     var isNumber = false;
-    
+
     tempStr = parseInt(selected.replace(/[^0-9]/g, ''));
 
     if (tempStr >= 0 && tempStr < 10000) {
@@ -49,7 +49,7 @@ router.post('/message', function (req, res) {
         tempAry.sort();
         for (var i = 1; i < tempAry.length; i++) {
             // 같은 숫자 반복
-            if (parseInt(tempAry[i]) - parseInt(tempAry[i - 1]) == 0) {
+            if (parseInt(tempAry[i]) == parseInt(tempAry[i - 1])) {
                 break;
             }
             if (i == tempAry.length - 1) {
@@ -60,7 +60,7 @@ router.post('/message', function (req, res) {
 
     // 숫자 입력이 아닌 경우
     if (!isNumber) {
-        if (selected == "나 숫자야구 게임 할래") {
+        if (selected == "나 숫자야구 게임 할래" ||selected == "숫자야구") {
             ranNum = makeRandomNumber();
             count = 0;
             strike = 0;
@@ -134,7 +134,7 @@ router.post('/message', function (req, res) {
             userAry[i] = Math.floor(tempStr / Math.pow(10, 3 - i));
             tempStr = (tempStr % Math.pow(10, 3 - i));
         }
-        if(isDuplicate(userAry)){
+        if (isDuplicate(userAry)) {
             res.json({
                 "message": {
                     "text": "중복된 수를 입력하셨어요. 아래의 메뉴를 선택해주세요"
@@ -154,7 +154,7 @@ router.post('/message', function (req, res) {
         if (strike == 4) {
             res.json({
                 "message": {
-                    "text": "(우와)"+"정답입니다!! " + ranNum + " \n총 " + count + "번 만에 맞추셨네요"
+                    "text": "(우와)" + "정답입니다!! " + ranNum + " \n총 " + count + "번 만에 맞추셨네요"
                 },
                 "keyboard": {
                     "type": "buttons",
@@ -163,16 +163,12 @@ router.post('/message', function (req, res) {
             })
         }
         else {
-            /**
-             * out / ranNum / userAry 빼야함
-             */
             res.json({
                 "message": {
-                    "text":
-                    // ranNum + " | " + userAry \n+
-                    "현재 점수는, " + count + "회 도전\n"
+                    "text": // ranNum + " | " + userAry \n+
+                    "현재 " + count + "회 도전중이십니다!\n"
                     + strike + " :Strike\n"
-                    + ball + ":Ball\n"
+                    + ball + ": Ball\n"
                     // + out + "Out 입니다."
                 },
                 "keyboard": keyboard_btn
