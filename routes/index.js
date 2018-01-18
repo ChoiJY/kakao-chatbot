@@ -11,7 +11,7 @@ var strike;
 var ball;
 var out;
 //server 보관
-var ranNum = [, , , ,];
+var ranNum;
 
 const keyboard_btn = {
     "type": "buttons",
@@ -176,22 +176,26 @@ function makeRandomNumber() {
     for (var i = 0; i < output.length; i++) {
         output[i] = getRandomIntInclusive(0, 9);
     }
-    temp = output;
+    console.log("raw output : "+output);
+    temp = output.slice(output.begin, output.end);
     temp.sort();
+    console.log("why sorted : "+output);
     for (var i = 1; i < temp.length; i++) {
         // 같은 숫자 반복
-        if (temp[i] - temp[i - 1] == 0) {
-            break;
+        if (temp[i] == temp[i - 1]) {
+            console.log("temp  "+ i +"와 i-1 중복 발생: " + temp);
+            return makeRandomNumber();
         }
-        if (i == temp.length - 1) {
-            return output;
-        }
+        if (i == (temp.length - 1)) return output;
     }
-    makeRandomNumber();
 }
 
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+ranNum = makeRandomNumber();
+console.log(ranNum)
+// ranNum = t;
+// console.log(ranNum)
 module.exports = router;
