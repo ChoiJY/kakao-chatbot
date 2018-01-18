@@ -155,7 +155,8 @@ router.post('/message', function (req, res) {
         else {
             res.json({
                 "message": {
-                    "text": ranNum + "\n현재 점수는, " + count + "회 도전\n"
+                    "text": ranNum + " | "+ userAry +
+                    "\n현재 점수는, " + count + "회 도전\n"
                     + strike + " :Strike\n"
                     + ball + ":Ball\n"
                     + out + "Out 입니다."
