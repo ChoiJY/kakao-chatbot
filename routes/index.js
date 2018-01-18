@@ -5,13 +5,13 @@ var router = express.Router();
 var count;
 var isNumber;
 // user 사용
-var tempAry = [, , ,];
+var tempAry = [, , , ,];
 var tempStr;
 var strike;
 var ball;
 var out;
 //server 보관
-var ranNum = [, , ,];
+var ranNum = [, , , ,];
 
 const keyboard_btn = {
     "type": "buttons",
@@ -57,7 +57,7 @@ router.post('/message', function (req, res) {
                 isNumber = true;
             }
         }
-    }else{
+    } else {
         isNumber = false;
     }
 
@@ -124,7 +124,7 @@ router.post('/message', function (req, res) {
     }
     // 숫자 입력
     else {
-        var userAry = [, , ,];
+        var userAry = [, , , ,];
         // 입력 숫자
         strike = 0;
         ball = 0;
@@ -144,7 +144,7 @@ router.post('/message', function (req, res) {
         if (strike == 4) {
             res.json({
                 "message": {
-                    "text": "정답입니다!! "+ranNum+" \n총 " + count + "번 만에 맞추셨네요"
+                    "text": "정답입니다!! " + ranNum + " \n총 " + count + "번 만에 맞추셨네요"
                 },
                 "keyboard": {
                     "type": "buttons",
@@ -155,7 +155,7 @@ router.post('/message', function (req, res) {
         else {
             res.json({
                 "message": {
-                    "text": ranNum+"\n현재 점수는, " + count + "회 도전\n"
+                    "text": ranNum + "\n현재 점수는, " + count + "회 도전\n"
                     + strike + " :Strike\n "
                     + ball + ":Ball\n"
                     + out + "Out 입니다."
@@ -172,7 +172,7 @@ router.post('/message', function (req, res) {
 
 function makeRandomNumber() {
     var temp;
-    var output = [, , ,];
+    var output = [, , , ,];
     for (var i = 0; i < output.length; i++) {
         output[i] = getRandomIntInclusive(0, 9);
     }
