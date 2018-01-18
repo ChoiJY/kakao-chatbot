@@ -156,7 +156,7 @@ router.post('/message', function (req, res) {
             res.json({
                 "message": {
                     "text": ranNum + "\n현재 점수는, " + count + "회 도전\n"
-                    + strike + " :Strike\n "
+                    + strike + " :Strike\n"
                     + ball + ":Ball\n"
                     + out + "Out 입니다."
                 },
@@ -194,8 +194,6 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-ranNum = makeRandomNumber();
-console.log(ranNum)
 // ranNum = t;
 // console.log(ranNum)
 module.exports = router;
