@@ -1,16 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
-// 일단 테스트니깐 multiuser x
+// TODO -> multi user에 대한 처리 필요
 var count;
-var isNumber;
-// user 사용
 var tempAry = [, , , ,];
 var tempStr;
 var strike;
 var ball;
 var out;
-//server 보관
+// server쪽 난수 저장
 var ranNum;
 
 const keyboard_btn = {
@@ -39,9 +37,10 @@ router.get('/keyboard', function (req, res) {
 // autoreply imp
 router.post('/message', function (req, res) {
     var selected = req.body.content;
-    // 입력 문자열에 숫자가 포함이면 숫자라고 전제
-    // "31안녕42 313145" 같은 경우 3142313145로 가정
+    var isNumber = false;
+    
     tempStr = parseInt(selected.replace(/[^0-9]/g, ''));
+
     if (tempStr >= 0 && tempStr < 10000) {
         // tempstr = 4자리 숫자 string
         for (var i = 0; i < tempAry.length; i++) {
@@ -57,11 +56,9 @@ router.post('/message', function (req, res) {
                 isNumber = true;
             }
         }
-    } else {
-        isNumber = false;
     }
 
-    // 숫자입력 아님
+    // 숫자 입력이 아닌 경우
     if (!isNumber) {
         if (selected == "나 숫자야구 게임 할래") {
             ranNum = makeRandomNumber();
@@ -106,6 +103,10 @@ router.post('/message', function (req, res) {
         else {
             if (selected == "포기하기") {
                 // 생성된 random 지우고, 초기 flow로 타게
+                /**
+                 * 포기해도 그냥 ranNum 지우게
+                 */
+                ranNum = makeRandomNumber();
                 res.json({
                     "message": {
                         "text": "처음으로 돌아갑니다"
@@ -115,7 +116,7 @@ router.post('/message', function (req, res) {
             } else {
                 res.json({
                     "message": {
-                        "text": "잘못 입력하셨어요"
+                        "text": "잘못 입력하셨어요. 아래의 메뉴를 선택해주세요"
                     },
                     "keyboard": keyboard_btn
                 })
@@ -133,6 +134,14 @@ router.post('/message', function (req, res) {
             userAry[i] = Math.floor(tempStr / Math.pow(10, 3 - i));
             tempStr = (tempStr % Math.pow(10, 3 - i));
         }
+        if(isDuplicate(userAry)){
+            res.json({
+                "message": {
+                    "text": "중복된 수를 입력하셨어요. 아래의 메뉴를 선택해주세요"
+                },
+                "keyboard": keyboard_btn
+            })
+        }
         for (var i = 0; i < 4; i++) {
             // strike / ball
             if (ranNum.indexOf(userAry[i]) != -1) {
@@ -145,7 +154,7 @@ router.post('/message', function (req, res) {
         if (strike == 4) {
             res.json({
                 "message": {
-                    "text": "정답입니다!! " + ranNum + " \n총 " + count + "번 만에 맞추셨네요"
+                    "text": "(우와)"+"정답입니다!! " + ranNum + " \n총 " + count + "번 만에 맞추셨네요"
                 },
                 "keyboard": {
                     "type": "buttons",
@@ -154,13 +163,17 @@ router.post('/message', function (req, res) {
             })
         }
         else {
+            /**
+             * out / ranNum / userAry 빼야함
+             */
             res.json({
                 "message": {
-                    "text": ranNum + " | " + userAry +
-                    "\n현재 점수는, " + count + "회 도전\n"
+                    "text":
+                    // ranNum + " | " + userAry \n+
+                    "현재 점수는, " + count + "회 도전\n"
                     + strike + " :Strike\n"
                     + ball + ":Ball\n"
-                    + out + "Out 입니다."
+                    // + out + "Out 입니다."
                 },
                 "keyboard": keyboard_btn
             })
@@ -172,6 +185,38 @@ router.post('/message', function (req, res) {
     selected = "";
 });
 
+/**
+ * isDuplicate
+ *
+ * Des
+ * 배열 내에 중복된 수가 있는지에 대한 검사
+ * @param inputArray
+ * @returns 중복 시 true,
+ *          아닐 시 false
+ */
+function isDuplicate(inputArray) {
+    var tempAry;
+    tempAry = inputArray.slice(inputArray.begin, inputArray.end);
+    tempAry.sort();
+    for (var i = 1; i < tempAry.length; i++) {
+        if (parseInt(tempAry[i]) == parseInt(tempAry[i - 1])) {
+            return true;
+        }
+        if (i == (tempAry.length - 1)) {
+            return false;
+        }
+    }
+}
+
+/**
+ * makeRandomNumber
+ *
+ * Des
+ * getRandomIntInclusive를 이용해서 랜덤 수 배열 생성,
+ * 동일한 수가 반복되는 경우 서로 다른 수의 배열이 나올 때 까지 recursive call
+ * @returns output
+ *          4개의 서로 다른 숫자 배열
+ */
 function makeRandomNumber() {
     var temp;
     var output = [, , , ,];
@@ -196,6 +241,4 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// ranNum = t;
-// console.log(ranNum)
 module.exports = router;
