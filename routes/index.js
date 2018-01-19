@@ -75,7 +75,7 @@ router.post('/message', function (req, res) {
 
     if (tempStr >= 0 && tempStr < 10000) {
         for (var i = 0; i < tempAry.length; i++) {
-            tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry-1 - i));
+            tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry - 1 - i));
         }
         tempAry.sort();
         for (var i = 1; i < tempAry.length; i++) {
@@ -144,14 +144,14 @@ router.post('/message', function (req, res) {
                 },
                 "keyboard": keyboard_text
             })
-        } else if (selected == "기록"){
+        } else if (selected == "기록") {
             res.json({
-                "message":{
+                "message": {
                     "text": "지금까지의 기록은 아래 버튼을 확인하세요"
                 },
                 "keyboard": {
-                    "type":"buttons",
-                    "buttons":["계속하기","2018 3S 2B", "2019 4S 5B", "3033 3S 4B", "..."]
+                    "type": "buttons",
+                    "buttons": ["계속하기", "2018 3S 2B", "2019 4S 5B", "3033 3S 4B", "ㅁㄴㅇㄹㄴㅁㅇㄻ", "ㄴㅁㅇㄹㄴㅇㄻㄴㅇㄹ", "..."]
                 }
             })
         }
