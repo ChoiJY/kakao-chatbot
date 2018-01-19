@@ -4,10 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-
+var model = require('./public/javascripts/userSchema');
+var controller = require('./public/javascripts/database');
 var app = express();
 
 // view engine setup
@@ -24,6 +26,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+
+var db = mongoose.connection;
+var dbUri = 'mongodb://root:0000@ds046267.mlab.com:46267/chatbot';
+var userModel;
+
+db.on('error', console.error);
+
+db.once('open', function(){
+    // CONNECTED TO MONGODB SERVER
+    console.log("Connected to mlab server");
+    userModel = mongoose.model('logs',model.schema);
+});
+
+mongoose.createConnection(dbUri);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
