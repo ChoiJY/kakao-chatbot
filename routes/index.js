@@ -251,9 +251,10 @@ router.post('/message', function (req, res) {
             res.json({
                 "message": {
                     "text": // ranNum + " | " + userAry \n+
-                    "현재 " + count + "번째 도전!\n"
-                    + strike + " :Strike\n"
-                    + ball + " :Ball\n"
+                    // "현재 " + count + "번째 도전!\n"
+                    // + Strike + " :Strike\n"
+                    // + Ball + " :Ball\n"
+                    "" + strike + "S " + ball + "B"
                     // + out + "Out 입니다."
                 },
                 "keyboard": keyboard_text
