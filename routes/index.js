@@ -55,12 +55,19 @@ const messageBtn_homeLink = {
 router.get('/', function (req, res, next) {
     // console.log(mongoDB.getLogs());
     // res.render('index', {title: 'Express'});
-
-    mongoDB.getLogs("1234567").then(function (results) {
-        res.json(results);
+    mongoDB.getLogs("12345673").then(function (result) {
+        res.send(result);
     });
-    // mongoDB.update("1234567", ["ddddd"]);
+    checkMyScore("1234567").then(function (res) {
+        console.log(res)
+    });
+    // console.log(checkMyScore("1234567"));
+    // mongoDB.getLogs("1234567").then(function (results) {
+    //     res.json(checkMyScore("1234567"));
+    // });
     // mongoDB.save("1234567", "dmddd");
+    // mongoDB.update("1234567", "ddddd");
+
     // mongoDB.delete("1234567").then(function(res){
     //     console.log(res)
     // });
@@ -103,6 +110,7 @@ router.post('/message', function (req, res) {
     if (!isNumber) {
         if (selected == "숫자 야구 게임") {
             mongoDB.delete(userKey);
+            mongoDB.save(userKey, ["계속하기"]);
             res.json({
                 "message": message_numHello,
                 "keyboard": keyboard_numSelectBtn
@@ -158,16 +166,28 @@ router.post('/message', function (req, res) {
                 }
             })
         } else if (selected == "기록") {
-            res.json({
-                "message": {
-                    "text": "지금까지의 기록은 아래 버튼을 확인하세요\n" +
-                    "확인하신 후 계속하기를 눌러주세요"
-                },
-                "keyboard": {
-                    "type": "buttons",
-                    "buttons": checkMyScore(userKey)
-                }
+            checkMyScore(userKey).then(function (results) {
+                res.json({
+                    "message": {
+                        "text": "지금까지의 기록은 아래 버튼을 확인하세요\n" +
+                        "확인하신 후 계속하기를 눌러주세요"
+                    },
+                    "keyboard": {
+                        "type": "buttons",
+                        "buttons": results
+                    }
+                })
             })
+            // res.json({
+            //     "message": {
+            //         "text": "지금까지의 기록은 아래 버튼을 확인하세요\n" +
+            //         "확인하신 후 계속하기를 눌러주세요"
+            //     },
+            //     "keyboard": {
+            //         "type": "buttons",
+            //         "buttons": checkMyScore(userKey)
+            //     }
+            // })
         } else if (selected == "계속하기") {
             res.json({
                 "message": {
@@ -347,17 +367,34 @@ function getRandomIntInclusive(min, max) {
 /**
  *  req의 user_key을 이용해서 DB의 해당 user 기록 retrieve
  */
-function checkMyScore(user_key, res) {
-    var userKey = user_key;
-    var tempAry = ["계속하기"];
-    if (mongoDB.getLogs(userKey) != "error") {
-        tempAry = tempAry.concat(mongoDB.getLogs(userKey));
-        return tempAry;
-    }
-    else {
-        tempAry = tempAry.concat("현재 기록이 없으시네요(멘붕)");
-        return tempAry;
-    }
+function checkMyScore(user_key) {
+    return new Promise(function(res){
+        var userKey = user_key;
+        mongoDB.getLogs(userKey).then(function (results) {
+            res(results);
+        })
+    });
+    // var userKey = user_key;
+    // var tempAry = [];
+    // var test = 1;
+    // var test2 = mongoDB.getLogs(userKey).then(function (results) {
+    //     tempAry = results;
+    //     console.log("1:" + test);
+    //     test = 2;
+    //     console.log("2:"+test);
+    //     return test;
+    // });
+    // console.log("3 :"+test);
+    // console.log("test2 : "+test2)
+    // // if (mongoDB.getLogs(userKey) != "error") {
+    // //     tempAry = tempAry.concat(mongoDB.getLogs(userKey));
+    // //     return tempAry;
+    // // }
+    // // else {
+    // //     tempAry = tempAry.concat("현재 기록이 없으시네요(멘붕)");
+    // //     return tempAry;
+    // // }
+    // return tempAry;
 }
 
 /**
@@ -365,10 +402,20 @@ function checkMyScore(user_key, res) {
  * @type {string}
  */
 function writeMyScore(userKey, data) {
-    if (mongoDB.getLogs(userKey) == "not exist") {
-        mongoDB.save(userKey, data);
-    }
-    else mongoDB.update(userKey, data);
+    mongoDB.getLogs(userKey).then(function (results) {
+        if (results == "not exist") {
+            mongoDB.save(userKey, data);
+        }
+        else {
+            mongoDB.update(userKey, data).then(function (results) {
+                console.log("writeMyScore's results " + results);
+            })
+        }
+    });
+    // if (mongoDB.getLogs(userKey) == "not exist") {
+    //     mongoDB.save(userKey, data);
+    // }
+    // else mongoDB.update(userKey, data);
 }
 
 /**

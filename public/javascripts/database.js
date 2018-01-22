@@ -17,10 +17,21 @@ exports.getLogs = function (userKey) {
     return new Promise(function (res) {
         mongoose.connect(uri);
         userModel.find({userKey: userKey}, function (err, docs) {
-            if (docs.length > 0) res(docs[0].data);
+            if (docs.length > 0) {
+                // console.log(docs[0].data);
+                res(docs[0].data);
+            }
             else res("not exist");
         });
     });
+    // mongoose.connect(uri);
+    // userModel.find({userKey:userKey}, function (err, docs) {
+    //     if(docs.length>0){
+    //         console.log("getLogs call : " + docs[0].data);
+    //         return docs[0].data;
+    //     }
+    //     else return "error";
+    // })
 };
 
 exports.update = function (userKey, newData) {
@@ -32,7 +43,10 @@ exports.update = function (userKey, newData) {
             function (err, docs) {
                 if (err) console.log(err);
                 else {
-                    if (docs != null) res(docs[0]);
+                    if (docs.length > 0) {
+                        console.log("update data" + docs[0]);
+                        res(docs[0]);
+                    }
                 }
             });
     });
