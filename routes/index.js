@@ -278,34 +278,33 @@ router.post('/message', function (req, res) {
         count += 1;
         // 정답
         if (strike == aryLength) {
-            mongoDB.delete(userKey).then(function(results){
-                res.json({
-                    "message": {
-                        "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
-                    },
-                    "keyboard": {
-                        "type": "buttons",
-                        "buttons": ["처음으로 돌아가기"]
-                    }
-                })
+            mongoDB.delete(userKey).then(function (results) {
             });
+            res.json({
+                "message": {
+                    "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
+                },
+                "keyboard": {
+                    "type": "buttons",
+                    "buttons": ["처음으로 돌아가기"]
+                }
+            })
         }
         // 오답
         else {
             var temp = userAry.toString().replace(/,/g, '');
-            writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
-                .then(function(results){
-                    res.json({
-                        "message": {
-                            "text": // ranNum + " | " + userAry \n+
-                            // "현재 " + count + "번째 도전!\n"
-                            // + Strike + " :Strike\n"
-                            // + Ball + " :Ball\n"
-                            "" + strike + "S " + ball + "B"
-                            // + out + "Out 입니다."
-                        }
-                    })
+            writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B").then(function (results) {
                 });
+            res.json({
+                "message": {
+                    "text": // ranNum + " | " + userAry \n+
+                    // "현재 " + count + "번째 도전!\n"
+                    // + Strike + " :Strike\n"
+                    // + Ball + " :Ball\n"
+                    "" + strike + "S " + ball + "B"
+                    // + out + "Out 입니다."
+                }
+            })
         }
     }
 
@@ -325,7 +324,7 @@ router.post('/message', function (req, res) {
  */
 function isDuplicate(inputArray) {
     var tempAry;
-    tempAry = inputArray.slice(inputArray.begin, inputArray.end);
+    tempAry = inputArray.slice(0, inputArray.length - 1);
     tempAry.sort();
     for (var i = 1; i < tempAry.length; i++) {
         if (parseInt(tempAry[i]) == parseInt(tempAry[i - 1])) {
@@ -411,7 +410,7 @@ function checkMyScore(user_key) {
  * @type {string}
  */
 function writeMyScore(userKey, data) {
-    return new Promise(function(res) {
+    return new Promise(function (res) {
         mongoDB.getLogs(userKey).then(function (results) {
             if (results == "not exist") {
                 mongoDB.save(userKey, data);
