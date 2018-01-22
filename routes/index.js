@@ -61,6 +61,7 @@ router.get('/', function (req, res, next) {
     checkMyScore("1234567").then(function (result) {
         res.send(result);
     });
+    writeMyScore("1234567", "18d");
     // console.log(checkMyScore("1234567"));
     // mongoDB.getLogs("1234567").then(function (results) {
     //     res.json(checkMyScore("1234567"));
@@ -273,30 +274,33 @@ router.post('/message', function (req, res) {
         count += 1;
         // 정답
         if (strike == aryLength) {
-            mongoDB.delete(userKey);
-            res.json({
-                "message": {
-                    "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
-                },
-                "keyboard": {
-                    "type": "buttons",
-                    "buttons": ["처음으로 돌아가기"]
-                }
-            })
+            mongoDB.delete(userKey).then(function(results){
+                res.json({
+                    "message": {
+                        "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
+                    },
+                    "keyboard": {
+                        "type": "buttons",
+                        "buttons": ["처음으로 돌아가기"]
+                    }
+                })
+            });
         }
         // 오답
         else {
-            writeMyScore(userKey, userAry.replace(/,/g, '') + " " + "" + strike + "S " + ball + "B");
-            res.json({
-                "message": {
-                    "text": // ranNum + " | " + userAry \n+
-                    // "현재 " + count + "번째 도전!\n"
-                    // + Strike + " :Strike\n"
-                    // + Ball + " :Ball\n"
-                    "" + strike + "S " + ball + "B"
-                    // + out + "Out 입니다."
-                }
-            })
+            writeMyScore(userKey, userAry.replace(/,/g, '') + " " + "" + strike + "S " + ball + "B")
+                .then(function(results){
+                    res.json({
+                        "message": {
+                            "text": // ranNum + " | " + userAry \n+
+                            // "현재 " + count + "번째 도전!\n"
+                            // + Strike + " :Strike\n"
+                            // + Ball + " :Ball\n"
+                            "" + strike + "S " + ball + "B"
+                            // + out + "Out 입니다."
+                        }
+                    })
+                });
         }
     }
 
@@ -368,7 +372,7 @@ function getRandomIntInclusive(min, max) {
  *  req의 user_key을 이용해서 DB의 해당 user 기록 retrieve
  */
 function checkMyScore(user_key) {
-    return new Promise(function(res){
+    return new Promise(function (res) {
         var userKey = user_key;
         mongoDB.getLogs(userKey).then(function (results) {
             res(results);
@@ -402,16 +406,28 @@ function checkMyScore(user_key) {
  * @type {string}
  */
 function writeMyScore(userKey, data) {
-    mongoDB.getLogs(userKey).then(function (results) {
-        if (results == "not exist") {
-            mongoDB.save(userKey, data);
-        }
-        else {
-            mongoDB.update(userKey, data).then(function (results) {
-                console.log("writeMyScore's results " + results);
-            })
-        }
-    });
+    return new Promise(function(res) {
+        mongoDB.getLogs(userKey).then(function (results) {
+            if (results == "not exist") {
+                mongoDB.save(userKey, data);
+            }
+            else {
+                mongoDB.update(userKey, data).then(function (results) {
+                    console.log("writeMyScore's results " + results);
+                })
+            }
+        })
+    })
+    // mongoDB.getLogs(userKey).then(function (results) {
+    //     if (results == "not exist") {
+    //         mongoDB.save(userKey, data);
+    //     }
+    //     else {
+    //         mongoDB.update(userKey, data).then(function (results) {
+    //             console.log("writeMyScore's results " + results);
+    //         })
+    //     }
+    // });
     // if (mongoDB.getLogs(userKey) == "not exist") {
     //     mongoDB.save(userKey, data);
     // }
