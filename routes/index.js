@@ -266,7 +266,7 @@ router.post('/message', function (req, res) {
         }
         // 오답
         else {
-            writeMyScore(userKey,userAry);
+            writeMyScore(userKey, userAry);
             res.json({
                 "message": {
                     "text": // ranNum + " | " + userAry \n+
@@ -351,7 +351,7 @@ function checkMyScore(user_key, res) {
     var userKey = user_key;
     var tempAry = ["계속하기"];
     if (mongoDB.getLogs(userKey) != "error") {
-        tempAry = tempAry.concat(mongoDB.getLogs(userkey));
+        tempAry = tempAry.concat(mongoDB.getLogs(userKey));
         return tempAry;
     }
     else {
@@ -365,7 +365,7 @@ function checkMyScore(user_key, res) {
  * @type {string}
  */
 function writeMyScore(userKey, data) {
-    if(mongoDB.getLogs(userKey) == "not exist"){
+    if (mongoDB.getLogs(userKey) == "not exist") {
         mongoDB.save(userKey, data);
     }
     else mongoDB.update(userKey, data);
