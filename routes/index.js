@@ -55,11 +55,11 @@ const messageBtn_homeLink = {
 router.get('/', function (req, res, next) {
     // console.log(mongoDB.getLogs());
     // res.render('index', {title: 'Express'});
-    mongoDB.getLogs("12345673").then(function (result) {
+    // mongoDB.getLogs("12345673").then(function (result) {
+    //     res.send(result);
+    // });
+    checkMyScore("1234567").then(function (result) {
         res.send(result);
-    });
-    checkMyScore("1234567").then(function (res) {
-        console.log(res)
     });
     // console.log(checkMyScore("1234567"));
     // mongoDB.getLogs("1234567").then(function (results) {
@@ -286,7 +286,7 @@ router.post('/message', function (req, res) {
         }
         // 오답
         else {
-            writeMyScore(userKey, userAry);
+            writeMyScore(userKey, userAry.replace(/,/g, '') + " " + "" + strike + "S " + ball + "B");
             res.json({
                 "message": {
                     "text": // ranNum + " | " + userAry \n+
