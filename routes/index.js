@@ -90,6 +90,7 @@ router.post('/message', function (req, res) {
     var userKey = req.body.user_key;
     var isNumber = false;
 
+    // isNumber 체크
     tempStr = parseInt(selected.replace(/[^0-9]/g, ''));
 
     if (tempStr >= 0 && tempStr < 100000) {
@@ -309,7 +310,7 @@ router.post('/message', function (req, res) {
     }
 
     isNumber = false;
-    tempStr = 0;
+    tempStr = "";
     selected = "";
 });
 
