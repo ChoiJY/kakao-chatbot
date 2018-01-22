@@ -92,7 +92,7 @@ router.post('/message', function (req, res) {
 
     tempStr = parseInt(selected.replace(/[^0-9]/g, ''));
 
-    if (tempStr >= 0 && tempStr < 10000) {
+    if (tempStr >= 0 && tempStr < 100000) {
         for (var i = 0; i < tempAry.length; i++) {
             tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry - 1 - i));
         }
