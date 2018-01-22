@@ -4,7 +4,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var controller = require('../public/javascripts/database');
+var mongoDB = require('../public/javascripts/database');
 var model = require('../public/javascripts/userSchema');
 var uri = 'mongodb://root:0000@ds046267.mlab.com:46267/chatbot';
 
@@ -53,12 +53,20 @@ const messageBtn_homeLink = {
 };
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    // console.log(controller.getLogs());
+    // console.log(mongoDB.getLogs());
     // res.render('index', {title: 'Express'});
 
-    controller.getLogs("1234567").then(function (results) {
+    mongoDB.getLogs("1234567").then(function (results) {
+        res.json(results);
     });
-    res.send();
+    // mongoDB.update("1234567", ["ddddd"]);
+    // mongoDB.save("1234567", "dmddd");
+    // mongoDB.delete("1234567").then(function(res){
+    //     console.log(res)
+    // });
+    // mongoDB.getLogs("1234567").then(function(res){
+    //     console.log(res)
+    // })
 });
 
 // keyboard init
@@ -69,6 +77,7 @@ router.get('/keyboard', function (req, res) {
 // autoreply imp
 router.post('/message', function (req, res) {
     var selected = req.body.content;
+    var userKey = req.body.user_key;
     var isNumber = false;
 
     tempStr = parseInt(selected.replace(/[^0-9]/g, ''));
@@ -93,12 +102,19 @@ router.post('/message', function (req, res) {
     // 숫자 입력이 아닌 경우
     if (!isNumber) {
         if (selected == "숫자 야구 게임") {
+            mongoDB.delete(userKey);
             res.json({
                 "message": message_numHello,
                 "keyboard": keyboard_numSelectBtn
             });
         }
         else if (selected == "더치 페이") {
+            res.json({
+                "message": "아직 완성되지 않은 기능이에요.. TT \n" +
+                "조금만 기다려 주세용(찡긋)\n" +
+                "처음으로 돌아갑니다!",
+                "keyboard": keyboard_startBtn
+            })
             //TODO
         }
         else if (selected == "처음으로 돌아가기" || selected == "처음으로") {
@@ -117,8 +133,7 @@ router.post('/message', function (req, res) {
                 "message": {
                     "text": "3자리 야구게임을 시작하셨네요.\n" + message_gameRule,
                     "message_button": messageBtn_homeLink
-                },
-                "keyboard": keyboard_text
+                }
             })
         }
         else if (selected == "어려움") {
@@ -129,8 +144,7 @@ router.post('/message', function (req, res) {
                 "message": {
                     "text": "4자리 야구게임을 시작하셨네요.(놀람)\n" + message_gameRule,
                     "message_button": messageBtn_homeLink
-                },
-                "keyboard": keyboard_text
+                }
             })
         }
         else if (selected == "아주 어려움") {
@@ -141,17 +155,23 @@ router.post('/message', function (req, res) {
                 "message": {
                     "text": "5자리 야구게임을 시작하셨네요.(놀람)(놀람)\n" + message_gameRule,
                     "message_button": messageBtn_homeLink
-                },
-                "keyboard": keyboard_text
+                }
             })
         } else if (selected == "기록") {
             res.json({
                 "message": {
-                    "text": "지금까지의 기록은 아래 버튼을 확인하세요"
+                    "text": "지금까지의 기록은 아래 버튼을 확인하세요\n" +
+                    "확인하신 후 계속하기를 눌러주세요"
                 },
                 "keyboard": {
                     "type": "buttons",
-                    "buttons": ["계속하기", "2018 3S 2B", "2019 4S 5B", "3033 3S 4B", "ㅁㄴㅇㄹㄴㅁㅇㄻ", "ㄴㅁㅇㄹㄴㅇㄻㄴㅇㄹ", "..."]
+                    "buttons": checkMyScore(userKey)
+                }
+            })
+        } else if (selected == "계속하기") {
+            res.json({
+                "message": {
+                    "text": "다음 숫자를 입력해주세요!"
                 }
             })
         }
@@ -176,15 +196,13 @@ router.post('/message', function (req, res) {
                 res.json({
                     "message": {
                         "text": "처음으로 돌아갑니다"
-                    },
-                    "keyboard": keyboard_text
+                    }
                 })
             } else {
                 res.json({
                     "message": {
                         "text": "잘못 입력하셨어요."
-                    },
-                    "keyboard": keyboard_text
+                    }
                 })
             }
         }
@@ -221,8 +239,7 @@ router.post('/message', function (req, res) {
                 "message": {
                     "text": "중복되는 수를 입력하면 안되는데...\n" +
                     "다시 한번만 입력해주세요 (제발)"
-                },
-                "keyboard": keyboard_text
+                }
             })
         }
         // strike / ball / out
@@ -236,18 +253,20 @@ router.post('/message', function (req, res) {
         count += 1;
         // 정답
         if (strike == aryLength) {
+            mongoDB.delete(userKey);
             res.json({
                 "message": {
                     "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
                 },
                 "keyboard": {
                     "type": "buttons",
-                    "buttons": ["처음으로 돌아가기", "자랑하기"]
+                    "buttons": ["처음으로 돌아가기"]
                 }
             })
         }
         // 오답
         else {
+            writeMyScore(userKey,userAry);
             res.json({
                 "message": {
                     "text": // ranNum + " | " + userAry \n+
@@ -256,8 +275,7 @@ router.post('/message', function (req, res) {
                     // + Ball + " :Ball\n"
                     "" + strike + "S " + ball + "B"
                     // + out + "Out 입니다."
-                },
-                "keyboard": keyboard_text
+                }
             })
         }
     }
@@ -326,13 +344,43 @@ function makeRandomNumber(type) {
 function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+/**
+ *  req의 user_key을 이용해서 DB의 해당 user 기록 retrieve
+ */
+function checkMyScore(user_key, res) {
+    var userKey = user_key;
+    var tempAry = ["계속하기"];
+    if (mongoDB.getLogs(userKey) != "error") {
+        tempAry = tempAry.concat(mongoDB.getLogs(userkey));
+        return tempAry;
+    }
+    else {
+        tempAry = tempAry.concat("현재 기록이 없으시네요(멘붕)");
+        return tempAry;
+    }
+}
 
-const message_gameRule = "[게임설명]\n" +
-    "-숫자야구는 정한 난이도에 맞는 숫자조합을 맞추는 게임입니다.\n" +
-    "-숫자와 자리가 일치 시에는 1Strike 증가, 숫자만 일치하고 자리는 불일치시 1Ball증가합니다.\n" +
+/**
+ * req user_key 이용해서 DB에 해당 user의 기록 create
+ * @type {string}
+ */
+function writeMyScore(userKey, data) {
+    if(mongoDB.getLogs(userKey) == "not exist"){
+        mongoDB.save(userKey, data);
+    }
+    else mongoDB.update(userKey, data);
+}
+
+/**
+ *
+ * @type {string}
+ */
+const message_gameRule = "'[게임설명]\n" +
+    "- 숫자야구는 정한 난이도에 맞는 숫자조합을 맞추는 게임입니다.\n" +
+    "- 숫자와 자리가 일치 시에는 1Strike 증가, 숫자만 일치하고 자리는 불일치시 1Ball증가합니다.\n\n" +
     "[주의 & 참고사항]\n" +
-    "-중복된 숫자조합은 불가능합니다.\n" +
-    "-이때까지 시도한 숫자와 결과를 보고 싶을 시 [기록]을 입력하시면 됩니다.\n" +
-    "-게임을 종료하고 싶을 시 [포기]를 입력하시면 됩니다.";
+    "- 중복된 숫자조합은 불가능합니다.\n" +
+    "- 이때까지 시도한 숫자와 결과를 보고 싶을 시 [기록]을 입력하시면 됩니다.\n" +
+    "- 게임을 종료하고 싶을 시 [포기]를 입력하시면 됩니다.";
 
 module.exports = router;
