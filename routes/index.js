@@ -170,6 +170,7 @@ router.post('/message', function (req, res) {
             })
         } else if (selected == "기록") {
             checkMyScore(userKey).then(function (results) {
+                var temp = results.toString().replace(/,/g, '');
                 res.json({
                     "message": {
                         "text": "지금까지의 기록은 아래 버튼을 확인하세요\n" +
@@ -177,7 +178,7 @@ router.post('/message', function (req, res) {
                     },
                     "keyboard": {
                         "type": "buttons",
-                        "buttons": results.toString().replace(/,/g, '')
+                        "buttons": temp
                     }
                 })
             })
@@ -290,7 +291,8 @@ router.post('/message', function (req, res) {
         }
         // 오답
         else {
-            writeMyScore(userKey, userAry.replace(/,/g, '') + " " + "" + strike + "S " + ball + "B")
+            var temp = userAry.replace(/,/g, '');
+            writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
                 .then(function(results){
                     res.json({
                         "message": {
