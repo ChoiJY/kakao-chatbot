@@ -292,7 +292,7 @@ router.post('/message', function (req, res) {
         }
         // 오답
         else {
-            var temp = userAry.replace(/,/g, '');
+            var temp = userAry.toString().replace(/,/g, '');
             writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
                 .then(function(results){
                     res.json({
