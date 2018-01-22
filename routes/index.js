@@ -422,7 +422,7 @@ function writeMyScore(userKey, data) {
  *
  * @type {string}
  */
-const message_gameRule = "'[게임설명]\n" +
+const message_gameRule = "\n[게임설명]\n" +
     "- 숫자야구는 정한 난이도에 맞는 숫자조합을 맞추는 게임입니다.\n" +
     "- 숫자와 자리가 일치 시에는 1Strike 증가, 숫자만 일치하고 자리는 불일치시 1Ball증가합니다.\n\n" +
     "[주의 & 참고사항]\n" +
