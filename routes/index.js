@@ -94,7 +94,7 @@ router.post('/message', function (req, res) {
 
     if (tempStr >= 0 && tempStr < 100000) {
         for (var i = 0; i < tempAry.length; i++) {
-            tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry - 1 - i));
+            tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry.length - 1 - i));
         }
         tempAry.sort();
         for (var i = 1; i < tempAry.length; i++) {
