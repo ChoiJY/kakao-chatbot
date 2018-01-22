@@ -171,7 +171,7 @@ router.post('/message', function (req, res) {
             })
         } else if (selected == "기록") {
             checkMyScore(userKey).then(function (results) {
-                var temp = results.toString().replace(/,/g, '');
+                // var temp = results.toString().replace(/,/g, '');
                 res.json({
                     "message": {
                         "text": "지금까지의 기록은 아래 버튼을 확인하세요\n" +
@@ -179,7 +179,7 @@ router.post('/message', function (req, res) {
                     },
                     "keyboard": {
                         "type": "buttons",
-                        "buttons": temp
+                        "buttons": results
                     }
                 })
             })
