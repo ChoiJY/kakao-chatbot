@@ -174,7 +174,7 @@ router.post('/message', function (req, res) {
                     },
                     "keyboard": {
                         "type": "buttons",
-                        "buttons": results
+                        "buttons": results.toString().replace(/,/g, '')
                     }
                 })
             })
