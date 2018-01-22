@@ -62,6 +62,8 @@ router.get('/', function (req, res, next) {
         res.send(result);
     });
     writeMyScore("1234567", "18d");
+    mongoDB.delete("1234567");
+    writeMyScore("1234567", "18d, 계속하기");
     // console.log(checkMyScore("1234567"));
     // mongoDB.getLogs("1234567").then(function (results) {
     //     res.json(checkMyScore("1234567"));
@@ -156,7 +158,7 @@ router.post('/message', function (req, res) {
                 }
             })
         }
-        else if (selected == "아주 어려움") {
+        else if (selected == "매우 어려움") {
             ranNum = makeRandomNumber(5);
             count = strike = ball = out = 0;
             difficulty = "hell";

@@ -43,9 +43,11 @@ exports.update = function (userKey, newData) {
             function (err, docs) {
                 if (err) console.log(err);
                 else {
-                    if (docs.length > 0) {
-                        console.log("update data" + docs[0]);
-                        res(docs[0]);
+                    if(docs != null){
+                        if (docs.length > 0) {
+                            console.log("update data" + docs[0]);
+                            res(docs[0]);
+                        }
                     }
                 }
             });
