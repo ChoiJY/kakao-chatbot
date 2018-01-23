@@ -63,9 +63,9 @@ router.post('/message', function (req, res) {
 
     // isNumber 체크
     // TODO 숫자 앞에 0 사라지는거
+    // 숫자야구
     if (!isDutch) {
         tempStr = parseInt(selected.replace(/[^0-9]/g, ""));
-
         if (tempStr >= 0 && tempStr < 100000) {
             for (var i = 0; i < tempAry.length; i++) {
                 tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry.length - 1 - i));
@@ -82,7 +82,7 @@ router.post('/message', function (req, res) {
             }
         }
     }
-    // 금액 체크
+    // 금액 체크 더치페이 인 경우
     else {
         // n빵
         if (isFair) {
@@ -95,15 +95,17 @@ router.post('/message', function (req, res) {
                     isNumber = false;
                 }
                 // 숫자면
-                else {
-                    isNumber = true;
-                    isDutch = true;
-                }
+                // else {
+                //     isNumber = true;
+                //     isDutch = true;
+                // }
             }
+            isNumber = true;
         }
-        // 복불복(인원체크)
+        // 복불복(인원체크) isfair = f / isNumber =t //isdutch = t
         else if (!isFair) {
             totalMan = parseInt(selected);
+            if(!isNaN(totalMan)) isNumber = true;
             res.json({
                 "message": {
                     "text": "총 금액을 입력해주세요"
@@ -113,8 +115,7 @@ router.post('/message', function (req, res) {
         else {
             tempPrice[0] = parseInt(selected);
             if (isNaN(tempPrice[0])) {
-                isDutch = true;
-                isNumber = true;
+                isNumber = false;
             }
         }
     }
@@ -231,9 +232,9 @@ router.post('/message', function (req, res) {
             }
         }
     }
-    // 숫자 입력 isNumber === false
+    // 숫자 입력 isNumber === true
     else {
-        if (isDutch) { // isNumber = false, isDutch = true
+        if (isDutch) { // isNumber = t, isDutch = true
             // 공평하게
             if (isFair) {
                 var people;
@@ -252,7 +253,8 @@ router.post('/message', function (req, res) {
                 res.json({
                     "message": {
                         "text": "더치페이 결과는 아래와 같습니다.\n" +
-                        "각자 " + mustPaid + " 원씩 지불하시면 돼요" + additionalText
+                        "각자 " + mustPaid + " 원씩 지불하시면 돼요" + additionalText +
+                            "\n" + isDutch
                     },
                     "keyboard": {
                         "type": "buttons",
