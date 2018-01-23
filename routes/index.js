@@ -203,9 +203,11 @@ router.post('/message', function (req, res) {
         else if (selected === "더치 페이") {
             res.json(dutchPay_start());
         } else if (selected === "돈은 공정하게 나눠야죠") {
+            isDutch = true;
             isFair = true;
             res.json(dutchPay_fair());
         } else if (selected === "복불복") {
+            isDutch = true;
             isFair = false;
             res.json(dutchPay_lotto());
         }
@@ -250,7 +252,7 @@ router.post('/message', function (req, res) {
                     "message": {
                         "text": "더치페이 결과는 아래와 같습니다.\n" +
                         "각자 " + mustPaid + " 원씩 지불하시면 돼요" + additionalText +
-                            "\n" + isDutch
+                        "\n" + isDutch
                     },
                     "keyboard": {
                         "type": "buttons",
@@ -265,7 +267,7 @@ router.post('/message', function (req, res) {
                 for (var i = 0; i < totalMan - 1; i++) {
                     resultFormat += tempPerson[i] + " 님 " + results[i] + "원\n";
                 }
-                isDutch =false;
+                isDutch = false;
                 res.json({
                     "message": {
                         "text": "복불복 결과는 아래와 같습니다.\n" +
