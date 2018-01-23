@@ -15,6 +15,7 @@ var strike;
 var ball;
 var out;
 var difficulty;
+var tempPrice = new Array(2);
 
 // server쪽 난수 저장
 var ranNum;
@@ -55,25 +56,35 @@ router.post('/message', function (req, res) {
     var selected = req.body.content;
     var userKey = req.body.user_key;
     var isNumber = false;
+    var isDutch = false;
 
     // isNumber 체크
     // TODO 숫자 앞에 0 사라지는거
-    tempStr = parseInt(selected.replace(/[^0-9]/g, ''));
+    if (!isDutch) {
+        tempStr = parseInt(selected.replace(/[^0-9]/g, ""));
 
-    if (tempStr >= 0 && tempStr < 100000) {
-        for (var i = 0; i < tempAry.length; i++) {
-            tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry.length - 1 - i));
-        }
-        tempAry.sort();
-        for (var i = 1; i < tempAry.length; i++) {
-            // 같은 숫자 반복
-            if (parseInt(tempAry[i]) === parseInt(tempAry[i - 1])) {
-                break;
+        if (tempStr >= 0 && tempStr < 100000) {
+            for (var i = 0; i < tempAry.length; i++) {
+                tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry.length - 1 - i));
             }
-            if (i === tempAry.length - 1) {
-                isNumber = true;
+            tempAry.sort();
+            for (var i = 1; i < tempAry.length; i++) {
+                // 같은 숫자 반복
+                if (parseInt(tempAry[i]) === parseInt(tempAry[i - 1])) {
+                    break;
+                }
+                if (i === tempAry.length - 1) {
+                    isNumber = true;
+                }
             }
         }
+    }
+    // 금액 체크
+    else {
+        tempPrice = selected.replace(/[^0-9/]/g, "");
+        tempPrice = tempPrice.split("/");
+        tempPrice = tempPrice.splice(0, 2);
+        isNumber = true;
     }
 
     // 숫자 입력이 아닌 경우
@@ -85,8 +96,6 @@ router.post('/message', function (req, res) {
                 "message": message_numHello,
                 "keyboard": keyboard_numSelectBtn
             });
-        } else if (selected === "더치 페이") {
-            res.json(dutchPay_start());
         } else if (selected === "처음으로 돌아가기" || selected === "처음으로") {
             res.json({
                 "message": {
@@ -146,9 +155,16 @@ router.post('/message', function (req, res) {
             })
         }
         // dutchpay
-        else if (selected === "돈은 공정하게 나눠아죠") {
-
+        else if (selected === "더치 페이") {
+            isDutch = true;
+            res.json(dutchPay_start());
+        } else if (selected === "돈은 공정하게 나눠아죠") {
+            res.json(dutchPay_fair());
+        } else if (selected === "복불복") {
+            res.json(dutchPay_lotto());
         }
+
+        // input error & comeback home menu
         else {
             if (selected === "포기") {
                 res.json({
@@ -168,85 +184,110 @@ router.post('/message', function (req, res) {
     }
     // 숫자 입력
     else {
-        if (!isCorrectNumber(selected, difficulty)) {
+        if (isDutch) {
+            // TODO
+            var people;
+            var totalPrice;
+            var mustPaid;
+            var rest;
+            totalPrice = tempPrice[0];
+            people = tempPrice[1];
+
+            mustPaid = totalPrice / people;
+            rest = mustPaid % 100 * people;
             res.json({
                 "message": {
-                    "text": "선택하신 " + difficulty + " 난이도랑 " +
-                    "입력한 " + selected + " 자리가 맞지 않습니다!\n" +
-                    "알맞게 입력해 주세요(찡긋)"
-                }
-            })
-        }
-        if (difficulty === "easy") {
-            var userAry = new Array(3);
-            var aryLength = userAry.length;
-            for (var i = 0; i < aryLength; i++) {
-                userAry[i] = Math.floor(tempStr / Math.pow(10, aryLength - 1 - i));
-                tempStr = (tempStr % Math.pow(10, aryLength - 1 - i));
-            }
-        }
-        else if (difficulty === "hard") {
-            var userAry = new Array(4);
-            var aryLength = userAry.length;
-            for (var i = 0; i < aryLength; i++) {
-                userAry[i] = Math.floor(tempStr / Math.pow(10, aryLength - 1 - i));
-                tempStr = (tempStr % Math.pow(10, aryLength - 1 - i));
-            }
-        }
-        else if (difficulty === "hell") {
-            var userAry = new Array(5);
-            var aryLength = userAry.length;
-            for (var i = 0; i < aryLength; i++) {
-                userAry[i] = Math.floor(tempStr / Math.pow(10, aryLength - 1 - i));
-                tempStr = (tempStr % Math.pow(10, aryLength - 1 - i));
-            }
-        }
-        strike = ball = out = 0;
-        if (isDuplicate(userAry)) {
-            res.json({
-                "message": {
-                    "text": "중복되는 수를 입력하면 안되는데...\n" +
-                    "다시 한번만 입력해주세요 (제발)"
-                }
-            })
-        }
-        // strike / ball / out
-        for (var i = 0; i < aryLength; i++) {
-            if (ranNum.indexOf(userAry[i]) !== -1) {
-                if (ranNum[i] === userAry[i]) strike += 1;
-                else ball += 1;
-            }
-            else out += 1;
-        }
-        count += 1;
-        // 정답
-        if (strike === aryLength) {
-            mongoDB.delete(userKey).then(function (results) {
-            });
-            res.json({
-                "message": {
-                    "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
+                    "text": "더치페이 결과는 아래와 같습니다.\n" +
+                    "각자 " + mustPaid + " 원씩 지불하시면 돼요" +
+                    "잔돈 " + rest + " 원은 나머지 한명이..(윙크)"
                 },
                 "keyboard": {
                     "type": "buttons",
                     "buttons": ["처음으로 돌아가기"]
                 }
-            })
-        }
-        // 오답
-        else {
-            var temp = userAry.toString().replace(/,/g, '');
-            if (isCorrectNumber(selected, difficulty)) {
-                writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
-                    .then(function (results) {
-                    });//TODO 나중에 필요한 logic
+            });
+        } else {
+            if (!isCorrectNumber(selected, difficulty)) {
                 res.json({
                     "message": {
-                        "text": strike + " S " + ball + " B"
+                        "text": "선택하신 " + difficulty + " 난이도랑 " +
+                        "입력한 " + selected + " 자리가 맞지 않습니다!\n" +
+                        "알맞게 입력해 주세요(찡긋)"
                     }
                 })
             }
+            if (difficulty === "easy") {
+                var userAry = new Array(3);
+                var aryLength = userAry.length;
+                for (var i = 0; i < aryLength; i++) {
+                    userAry[i] = Math.floor(tempStr / Math.pow(10, aryLength - 1 - i));
+                    tempStr = (tempStr % Math.pow(10, aryLength - 1 - i));
+                }
+            }
+            else if (difficulty === "hard") {
+                var userAry = new Array(4);
+                var aryLength = userAry.length;
+                for (var i = 0; i < aryLength; i++) {
+                    userAry[i] = Math.floor(tempStr / Math.pow(10, aryLength - 1 - i));
+                    tempStr = (tempStr % Math.pow(10, aryLength - 1 - i));
+                }
+            }
+            else if (difficulty === "hell") {
+                var userAry = new Array(5);
+                var aryLength = userAry.length;
+                for (var i = 0; i < aryLength; i++) {
+                    userAry[i] = Math.floor(tempStr / Math.pow(10, aryLength - 1 - i));
+                    tempStr = (tempStr % Math.pow(10, aryLength - 1 - i));
+                }
+            }
+            strike = ball = out = 0;
+            if (isDuplicate(userAry)) {
+                res.json({
+                    "message": {
+                        "text": "중복되는 수를 입력하면 안되는데...\n" +
+                        "다시 한번만 입력해주세요 (제발)"
+                    }
+                })
+            }
+            // strike / ball / out
+            for (var i = 0; i < aryLength; i++) {
+                if (ranNum.indexOf(userAry[i]) !== -1) {
+                    if (ranNum[i] === userAry[i]) strike += 1;
+                    else ball += 1;
+                }
+                else out += 1;
+            }
+            count += 1;
+            // 정답
+            if (strike === aryLength) {
+                mongoDB.delete(userKey).then(function (results) {
+                });
+                res.json({
+                    "message": {
+                        "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
+                    },
+                    "keyboard": {
+                        "type": "buttons",
+                        "buttons": ["처음으로 돌아가기"]
+                    }
+                })
+            }
+            // 오답
+            else {
+                var temp = userAry.toString().replace(/,/g, '');
+                if (isCorrectNumber(selected, difficulty)) {
+                    writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
+                        .then(function (results) {
+                        });//TODO 나중에 필요한 logic
+                    res.json({
+                        "message": {
+                            "text": strike + " S " + ball + " B"
+                        }
+                    })
+                }
+            }
         }
+
     }
 
     isNumber = false;
@@ -369,16 +410,8 @@ function writeMyScore(userKey, data) {
     })
 }
 
-function dutchPay_fair() {
-    var messageForm = {
-        "text": "나눌 총 금액과 인원수를 적어주세요\n" +
-        "예시) 15000 / 4"
-    };
-    return {
-        "message": messageForm
-    }
-}
-function dutchPay_start(){
+// flag 필요
+function dutchPay_start() {
     const dutchPay_startMessage = {
         "text": "더치페이 기능을 시작합니다.\n" +
         "아래에서 메뉴를 선택해주세요"
@@ -389,10 +422,32 @@ function dutchPay_start(){
         "buttons": ["돈은 공정하게 나눠야죠", "복불복"]
     };
     return {
-        "message" : dutchPay_startMessage,
+        "message": dutchPay_startMessage,
         "keyboard": dutchPay_buttons
     };
 }
+
+function dutchPay_fair() {
+    var messageForm = {
+        "text": "나눌 총 금액과 인원수를 적어주세요\n" +
+        "예시) 15000/4"
+    };
+    return {
+        "message": messageForm
+    };
+}
+
+function dutchPay_lotto() {
+    const messageForm = {
+        "text": "참석자 이름을 스페이스로 구분해서 " +
+        "적어주세요\n" +
+        "예시) 정우성 고수 장동건 "
+    };
+    return {
+        "message": messageForm
+    };
+}
+
 
 const message_gameRule = "\n[게임설명]\n" +
     "- 숫자야구는 정한 난이도에 맞는 숫자조합을 맞추는 게임입니다.\n" +
