@@ -168,10 +168,11 @@ router.post('/message', function (req, res) {
     }
     // 숫자 입력
     else {
-        if (!isCorrectNumber(tempStr, difficulty)) {
+        if (!isCorrectNumber(selected, difficulty)) {
             res.json({
                 "message": {
-                    "text": "선택하신 난이도와 자리수가 달라요!\n" +
+                    "text": "선택하신 " +difficulty+" 와 " +
+                    "입력한 "+selected+" 맞지 않습니다!\n" +
                     "알맞게 입력해 주세요"
                 }
             })
@@ -276,7 +277,7 @@ function isDuplicate(inputArray) {
  *
  * Des
  * 난이도에 따른 입력 숫자 자리가 맞지 않는지 확인
- * @params inputString (Array)
+ * @params inputString (String)
  *         difficulty (String)
  * @returns boolean
  */
