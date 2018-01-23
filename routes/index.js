@@ -201,7 +201,6 @@ router.post('/message', function (req, res) {
         }
         // dutchpay
         else if (selected === "더치 페이") {
-            isDutch = true;
             res.json(dutchPay_start());
         } else if (selected === "돈은 공정하게 나눠야죠") {
             isFair = true;
