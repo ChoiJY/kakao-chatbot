@@ -16,8 +16,6 @@ var ball;
 var out;
 var difficulty;
 var tempPrice = new Array(2);
-var isDutch = false;
-var isFair = true;
 var tempPerson;
 var totalMan;
 
@@ -60,6 +58,8 @@ router.post('/message', function (req, res) {
     var selected = req.body.content;
     var userKey = req.body.user_key;
     var isNumber = false;
+    var isDutch = false;
+    var isFair = true;
 
     // isNumber 체크
     // TODO 숫자 앞에 0 사라지는거
@@ -269,6 +269,7 @@ router.post('/message', function (req, res) {
                 for (var i = 0; i < totalMan - 1; i++) {
                     resultFormat += tempPerson[i] + " 님 " + results[i] + "원\n";
                 }
+                isDutch =false;
                 res.json({
                     "message": {
                         "text": "복불복 결과는 아래와 같습니다.\n" +
