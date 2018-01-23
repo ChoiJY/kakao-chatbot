@@ -41,6 +41,7 @@ const messageBtn_homeLink = {
 };
 /* test 용도 */
 router.get('/', function (req, res, next) {
+    console.log(isCorrectNumber("123", "easy"))
 });
 
 // keyboard init
@@ -175,7 +176,7 @@ router.post('/message', function (req, res) {
                 }
             })
         }
-        if (difficulty == "easy") {
+        if (difficulty === "easy") {
             var userAry = new Array(3);
             var aryLength = userAry.length;
             for (var i = 0; i < aryLength; i++) {
@@ -183,7 +184,7 @@ router.post('/message', function (req, res) {
                 tempStr = (tempStr % Math.pow(10, aryLength - 1 - i));
             }
         }
-        else if (difficulty == "hard") {
+        else if (difficulty === "hard") {
             var userAry = new Array(4);
             var aryLength = userAry.length;
             for (var i = 0; i < aryLength; i++) {
@@ -191,7 +192,7 @@ router.post('/message', function (req, res) {
                 tempStr = (tempStr % Math.pow(10, aryLength - 1 - i));
             }
         }
-        else if (difficulty == "hell") {
+        else if (difficulty === "hell") {
             var userAry = new Array(5);
             var aryLength = userAry.length;
             for (var i = 0; i < aryLength; i++) {
@@ -245,7 +246,7 @@ router.post('/message', function (req, res) {
     }
 
     isNumber = false;
-    tempStr = "";
+    tempStr = 0;
     selected = "";
 });
 
@@ -275,7 +276,7 @@ function isDuplicate(inputArray) {
  *
  * Des
  * 난이도에 따른 입력 숫자 자리가 맞지 않는지 확인
- * @params inputString (String)
+ * @params inputString (Array)
  *         difficulty (String)
  * @returns boolean
  */
