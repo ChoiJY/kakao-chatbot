@@ -176,7 +176,7 @@ router.post('/message', function (req, res) {
             } else {
                 res.json({
                     "message": {
-                        "text": "잘못 입력하셨어요."
+                        "text": "잘못 입력하셨어요." + isNumber +" "+ isDutch
                     }
                 })
             }
@@ -293,7 +293,7 @@ router.post('/message', function (req, res) {
     isNumber = false;
     tempStr = 0;
     selected = "";
-    isDutch = false;
+    // isDutch = false;
 });
 
 /**
