@@ -42,6 +42,7 @@ const messageBtn_homeLink = {
 /* test 용도 */
 router.get('/', function (req, res, next) {
     console.log(isCorrectNumber("123", "easy"))
+    res.json(dutchPay_start());
 });
 
 // keyboard init
@@ -56,7 +57,7 @@ router.post('/message', function (req, res) {
     var isNumber = false;
 
     // isNumber 체크
-    // TODO 개인화
+    // TODO 숫자 앞에 0 사라지는거
     tempStr = parseInt(selected.replace(/[^0-9]/g, ''));
 
     if (tempStr >= 0 && tempStr < 100000) {
@@ -75,7 +76,6 @@ router.post('/message', function (req, res) {
         }
     }
 
-
     // 숫자 입력이 아닌 경우
     if (!isNumber) {
         if (selected === "숫자 야구 게임") {
@@ -86,11 +86,7 @@ router.post('/message', function (req, res) {
                 "keyboard": keyboard_numSelectBtn
             });
         } else if (selected === "더치 페이") {
-            res.json({
-                "message": {},
-                "keyboard": {}
-            })
-            //TODO
+            res.json(dutchPay_start());
         } else if (selected === "처음으로 돌아가기" || selected === "처음으로") {
             res.json({
                 "message": {
@@ -148,12 +144,18 @@ router.post('/message', function (req, res) {
                     "text": "다음 숫자를 입력해주세요!"
                 }
             })
-        } else {
+        }
+        // dutchpay
+        else if (selected === "돈은 공정하게 나눠아죠") {
+
+        }
+        else {
             if (selected === "포기") {
                 res.json({
                     "message": {
                         "text": "처음으로 돌아갑니다"
-                    }
+                    },
+                    "keybord": keyboard_startBtn
                 })
             } else {
                 res.json({
@@ -169,9 +171,9 @@ router.post('/message', function (req, res) {
         if (!isCorrectNumber(selected, difficulty)) {
             res.json({
                 "message": {
-                    "text": "선택하신 " + difficulty + " 와 " +
-                    "입력한 " + selected + " 맞지 않습니다!\n" +
-                    "알맞게 입력해 주세요"
+                    "text": "선택하신 " + difficulty + " 난이도랑 " +
+                    "입력한 " + selected + " 자리가 맞지 않습니다!\n" +
+                    "알맞게 입력해 주세요(찡긋)"
                 }
             })
         }
@@ -236,7 +238,8 @@ router.post('/message', function (req, res) {
             var temp = userAry.toString().replace(/,/g, '');
             if (isCorrectNumber(selected, difficulty)) {
                 writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
-                    .then(function (results) {});//TODO 나중에 필요한 logic
+                    .then(function (results) {
+                    });//TODO 나중에 필요한 logic
                 res.json({
                     "message": {
                         "text": strike + " S " + ball + " B"
@@ -364,7 +367,32 @@ function writeMyScore(userKey, data) {
             }
         })
     })
-};
+}
+
+function dutchPay_fair() {
+    var messageForm = {
+        "text": "나눌 총 금액과 인원수를 적어주세요\n" +
+        "예시) 15000 / 4"
+    };
+    return {
+        "message": messageForm
+    }
+}
+function dutchPay_start(){
+    const dutchPay_startMessage = {
+        "text": "더치페이 기능을 시작합니다.\n" +
+        "아래에서 메뉴를 선택해주세요"
+    };
+
+    const dutchPay_buttons = {
+        "type": "buttons",
+        "buttons": ["돈은 공정하게 나눠야죠", "복불복"]
+    };
+    return {
+        "message" : dutchPay_startMessage,
+        "keyboard": dutchPay_buttons
+    };
+}
 
 const message_gameRule = "\n[게임설명]\n" +
     "- 숫자야구는 정한 난이도에 맞는 숫자조합을 맞추는 게임입니다.\n" +
