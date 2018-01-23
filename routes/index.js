@@ -19,6 +19,8 @@ var tempPrice = new Array(2);
 var tempPerson;
 var totalMan;
 
+var isDutch = false;
+var isFair = true;
 // server쪽 난수 저장
 var ranNum;
 
@@ -58,8 +60,6 @@ router.post('/message', function (req, res) {
     var selected = req.body.content;
     var userKey = req.body.user_key;
     var isNumber = false;
-    var isDutch = false;
-    var isFair = true;
 
     // isNumber 체크
     // TODO 숫자 앞에 0 사라지는거
@@ -112,12 +112,12 @@ router.post('/message', function (req, res) {
                 }
             });
         } //복불복 금액체크
-        else {
-            tempPrice[0] = parseInt(selected);
-            if (isNaN(tempPrice[0])) {
-                isNumber = false;
-            }
-        }
+        // else {
+        //     tempPrice[0] = parseInt(selected);
+        //     if (isNaN(tempPrice[0])) {
+        //         isNumber = false;
+        //     }
+        // }
     }
 
     // 숫자 입력이 아닌 경우
