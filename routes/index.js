@@ -248,6 +248,7 @@ router.post('/message', function (req, res) {
                 totalPrice -= rest;
                 mustPaid = totalPrice / people;
                 if (rest !== 0) additionalText = "\n잔돈 " + rest + " 원은 나머지 한명이..(윙크)";
+                isDutch = false;
                 res.json({
                     "message": {
                         "text": "더치페이 결과는 아래와 같습니다.\n" +
