@@ -102,7 +102,7 @@ router.post('/message', function (req, res) {
             }
         }
         // 복불복(인원체크)
-        else if (isCount && !isFair) {
+        else if (!isFair) {
             totalMan = parseInt(selected);
             res.json({
                 "message": {
@@ -111,8 +111,8 @@ router.post('/message', function (req, res) {
             });
         } //복불복 금액체크
         else {
-            tempPrice = parseInt(selected);
-            if (isNaN(tempPrice)) {
+            tempPrice[0] = parseInt(selected);
+            if (isNaN(tempPrice[0])) {
                 isDutch = true;
                 isNumber = true;
             }
@@ -231,9 +231,9 @@ router.post('/message', function (req, res) {
             }
         }
     }
-    // 숫자 입력
+    // 숫자 입력 isNumber === false
     else {
-        if (isDutch) {
+        if (isDutch) { // isNumber = false, isDutch = true
             // 공평하게
             if (isFair) {
                 var people;
