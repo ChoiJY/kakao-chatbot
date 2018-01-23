@@ -84,8 +84,14 @@ router.post('/message', function (req, res) {
         tempPrice = selected.replace(/[^0-9/]/g, "");
         tempPrice = tempPrice.split("/");
         tempPrice = tempPrice.splice(0, 2);
-        isDutch = true;
-        isNumber = true;
+        for (var i = 0; i < 2; i++) {
+            if (isNaN(tempPrice[i])) {
+                isNumber = false;
+            } else {
+                isNumber = true;
+                isDutch = true;
+            }
+        }
     }
 
     // 숫자 입력이 아닌 경우
