@@ -112,7 +112,7 @@ router.post('/message', function (req, res) {
         } //복불복 금액체크
         else {
             tempPrice = parseInt(selected);
-            if(isNaN(tempPrice)){
+            if (isNaN(tempPrice)) {
                 isDutch = true;
                 isNumber = true;
             }
@@ -261,7 +261,17 @@ router.post('/message', function (req, res) {
             }
             //복불복
             else {
-                dutchPay_lottoLogic(tempPrice[0], totalMan);
+                var results = dutchPay_lottoLogic(tempPrice[0], totalMan);
+                var resultFormat = "";
+                for (var i = 0; i < totalMan - 1; i++) {
+                    resultFormat += tempPerson[i] + " 님 " + results[i] + "원\n";
+                }
+                res.json({
+                    "message": {
+                        "text": "복불복 결과는 아래와 같습니다.\n" +
+                        resultFormat
+                    }
+                });
             }
 
         } else {
