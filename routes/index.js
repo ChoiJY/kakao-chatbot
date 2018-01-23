@@ -16,6 +16,8 @@ var ball;
 var out;
 var difficulty;
 var tempPrice = new Array(2);
+var isNumber = false;
+var isDutch = false;
 
 // server쪽 난수 저장
 var ranNum;
@@ -55,8 +57,6 @@ router.get('/keyboard', function (req, res) {
 router.post('/message', function (req, res) {
     var selected = req.body.content;
     var userKey = req.body.user_key;
-    var isNumber = false;
-    var isDutch = false;
 
     // isNumber 체크
     // TODO 숫자 앞에 0 사라지는거
