@@ -17,6 +17,9 @@ var out;
 var difficulty;
 var tempPrice = new Array(2);
 var isDutch = false;
+var isFair = true;
+var tempPerson;
+var totalMan;
 
 // server쪽 난수 저장
 var ranNum;
@@ -81,24 +84,57 @@ router.post('/message', function (req, res) {
     }
     // 금액 체크
     else {
-        tempPrice = selected.replace(/[^0-9/]/g, "");
-        tempPrice = tempPrice.split("/");
-        tempPrice = tempPrice.splice(0, 2);
-        for (var i = 0; i < 2; i++) {
-            // 숫자가 아니면
-            if (isNaN(tempPrice[i])) {
-                isNumber = false;
+        // n빵
+        if (isFair) {
+            tempPrice = selected.replace(/[^0-9/]/g, "");
+            tempPrice = tempPrice.split("/");
+            tempPrice = tempPrice.splice(0, 2);
+            for (var i = 0; i < tempPrice.length; i++) {
+                // 숫자가 아니면
+                if (isNaN(tempPrice[i])) {
+                    isNumber = false;
+                }
+                // 숫자면
+                else {
+                    isNumber = true;
+                    isDutch = true;
+                }
             }
-            // 숫자면
-            else {
-                isNumber = true;
+        }
+        // 복불복(인원체크)
+        else if (isCount && !isFair) {
+            totalMan = parseInt(selected);
+            res.json({
+                "message": {
+                    "text": "총 금액을 입력해주세요"
+                }
+            });
+        } //복불복 금액체크
+        else {
+            tempPrice = parseInt(selected);
+            if(isNaN(tempPrice)){
                 isDutch = true;
+                isNumber = true;
             }
         }
     }
 
     // 숫자 입력이 아닌 경우
     if (!isNumber) {
+        if (!isFair) {
+            tempPerson = selected.split(" ");
+            tempPerson.forEach(function (item, index) {
+                if (tempPerson[index] === "") {
+                    tempPerson.splice(index, 1);
+                }
+            });
+            totalMan = tempPerson.length;
+            res.json({
+                "message": {
+                    "text": "총 금액을 입력해주세요"
+                }
+            });
+        }
         if (selected === "숫자 야구 게임") {
             mongoDB.delete(userKey);
             mongoDB.save(userKey, ["계속하기"]);
@@ -170,8 +206,10 @@ router.post('/message', function (req, res) {
             isDutch = true;
             res.json(dutchPay_start());
         } else if (selected === "돈은 공정하게 나눠야죠") {
-            res.json(dutchPay_fair(isDutch));
+            isFair = true;
+            res.json(dutchPay_fair());
         } else if (selected === "복불복") {
+            isFair = false;
             res.json(dutchPay_lotto());
         }
 
@@ -196,29 +234,36 @@ router.post('/message', function (req, res) {
     // 숫자 입력
     else {
         if (isDutch) {
-            // TODO
-            var people;
-            var totalPrice;
-            var mustPaid;
-            var rest;
-            var additionalText = "";
+            // 공평하게
+            if (isFair) {
+                var people;
+                var totalPrice;
+                var mustPaid;
+                var rest;
+                var additionalText = "";
 
-            totalPrice = tempPrice[0];
-            people = tempPrice[1];
-            rest = totalPrice % 100;
-            totalPrice -= rest;
-            mustPaid = totalPrice / people;
-            if (rest !== 0) additionalText = "\n잔돈 " + rest + " 원은 나머지 한명이..(윙크)";
-            res.json({
-                "message": {
-                    "text": "더치페이 결과는 아래와 같습니다.\n" +
-                    "각자 " + mustPaid + " 원씩 지불하시면 돼요" + additionalText
-                },
-                "keyboard": {
-                    "type": "buttons",
-                    "buttons": ["처음으로 돌아가기"]
-                }
-            });
+                totalPrice = tempPrice[0];
+                people = tempPrice[1];
+                rest = totalPrice % 100;
+                totalPrice -= rest;
+                mustPaid = totalPrice / people;
+                if (rest !== 0) additionalText = "\n잔돈 " + rest + " 원은 나머지 한명이..(윙크)";
+                res.json({
+                    "message": {
+                        "text": "더치페이 결과는 아래와 같습니다.\n" +
+                        "각자 " + mustPaid + " 원씩 지불하시면 돼요" + additionalText
+                    },
+                    "keyboard": {
+                        "type": "buttons",
+                        "buttons": ["처음으로 돌아가기"]
+                    }
+                });
+            }
+            //복불복
+            else {
+                dutchPay_lottoLogic(tempPrice[0], totalMan);
+            }
+
         } else {
             if (!isCorrectNumber(selected, difficulty)) {
                 res.json({
@@ -440,11 +485,10 @@ function dutchPay_start() {
     };
 }
 
-function dutchPay_fair(test) {
+function dutchPay_fair() {
     var messageForm = {
         "text": "나눌 총 금액과 인원수를 적어주세요\n" +
-        "예시) 15000/4" +
-        "\n" + test
+        "예시) 15000/4"
     };
     return {
         "message": messageForm
@@ -462,6 +506,35 @@ function dutchPay_lotto() {
     };
 }
 
+function dutchPay_lottoLogic(amount, peopleNum) {
+    var rest = amount % 1000;
+    var total = amount - rest;
+    var rest2 = (total / peopleNum) % 1000;
+    var mustPaid = (total - rest2 * peopleNum) / peopleNum;
+    var remain = rest2 * peopleNum;
+    var returnAry = new Array(peopleNum);
+    console.log(rest + " | " + rest2);
+    console.log(mustPaid + " | " + total);
+
+    for (var i = 0; i < returnAry.length; i++) {
+        returnAry[i] = mustPaid;
+    }
+    if (remain > mustPaid / 3) {
+        // peoplenum -1까지 나눔
+        var luckyMan = getRandomIntInclusive(0, peopleNum - 1);
+        for (var i = 0; i < returnAry.length; i++) {
+            if (i === luckyMan) continue;
+            else {
+                returnAry[i] += (remain / (peopleNum - 1));
+                returnAry[i] += (rest / (peopleNum - 1));
+            }
+        }
+
+    } else {
+        returnAry[getRandomIntInclusive(0, peopleNum - 1)] += (remain + rest);
+    }
+    return returnAry;
+}
 
 const message_gameRule = "\n[게임설명]\n" +
     "- 숫자야구는 정한 난이도에 맞는 숫자조합을 맞추는 게임입니다.\n" +
