@@ -16,7 +16,6 @@ var ball;
 var out;
 var difficulty;
 var tempPrice = new Array(2);
-var isNumber = false;
 var isDutch = false;
 
 // server쪽 난수 저장
@@ -57,6 +56,7 @@ router.get('/keyboard', function (req, res) {
 router.post('/message', function (req, res) {
     var selected = req.body.content;
     var userKey = req.body.user_key;
+    var isNumber = false;
 
     // isNumber 체크
     // TODO 숫자 앞에 0 사라지는거
@@ -84,6 +84,7 @@ router.post('/message', function (req, res) {
         tempPrice = selected.replace(/[^0-9/]/g, "");
         tempPrice = tempPrice.split("/");
         tempPrice = tempPrice.splice(0, 2);
+        isDutch = true;
         isNumber = true;
     }
 
@@ -177,7 +178,7 @@ router.post('/message', function (req, res) {
             } else {
                 res.json({
                     "message": {
-                        "text": "잘못 입력하셨어요." + isNumber +" "+ isDutch
+                        "text": "잘못 입력하셨어요." + isNumber + " " + isDutch
                     }
                 })
             }
@@ -431,8 +432,8 @@ function dutchPay_start() {
 function dutchPay_fair(test) {
     var messageForm = {
         "text": "나눌 총 금액과 인원수를 적어주세요\n" +
-        "예시) 15000/4"+
-        "\n"+test
+        "예시) 15000/4" +
+        "\n" + test
     };
     return {
         "message": messageForm
