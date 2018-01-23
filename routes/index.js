@@ -94,11 +94,10 @@ router.post('/message', function (req, res) {
                 if (isNaN(tempPrice[i])) {
                     isNumber = false;
                 }
-                // 숫자면
-                // else {
-                //     isNumber = true;
-                //     isDutch = true;
-                // }
+                else {
+                    isNumber = true;
+                    isDutch = true;
+                }
             }
             isNumber = true;
         }
