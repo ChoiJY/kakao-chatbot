@@ -198,7 +198,7 @@ router.post('/message', function (req, res) {
             res.json({
                 "message": {
                     "text": "더치페이 결과는 아래와 같습니다.\n" +
-                    "각자 " + mustPaid + " 원씩 지불하시면 돼요" +
+                    "각자 " + mustPaid + " 원씩 지불하시면 돼요\n" +
                     "잔돈 " + rest + " 원은 나머지 한명이..(윙크)"
                 },
                 "keyboard": {
@@ -293,7 +293,7 @@ router.post('/message', function (req, res) {
     isNumber = false;
     tempStr = 0;
     selected = "";
-    // isDutch = false;
+    isDutch = false;
 });
 
 /**
