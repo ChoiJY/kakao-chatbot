@@ -93,13 +93,10 @@ router.post('/message', function (req, res) {
                 // 숫자가 아니면
                 if (isNaN(tempPrice[i])) {
                     isNumber = false;
+                    break;
                 }
-                else {
-                    isNumber = true;
-                    isDutch = true;
-                }
+                else isNumber = true;
             }
-            isNumber = true;
         }
         // 복불복(인원체크) isfair = f / isNumber =t //isdutch = t
         else if (!isFair) {
