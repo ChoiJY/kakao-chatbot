@@ -97,6 +97,7 @@ router.post('/message', function (req, res) {
                 "keyboard": keyboard_numSelectBtn
             });
         } else if (selected === "처음으로 돌아가기" || selected === "처음으로") {
+            isDutch = false;
             res.json({
                 "message": {
                     "text": "메뉴 선택 화면으로 돌아갑니다"
@@ -171,7 +172,7 @@ router.post('/message', function (req, res) {
                     "message": {
                         "text": "처음으로 돌아갑니다"
                     },
-                    "keybord": keyboard_startBtn
+                    "keyboard": keyboard_startBtn
                 })
             } else {
                 res.json({
@@ -293,7 +294,6 @@ router.post('/message', function (req, res) {
     isNumber = false;
     tempStr = 0;
     selected = "";
-    isDutch = false;
 });
 
 /**
