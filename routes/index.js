@@ -274,8 +274,9 @@ router.post('/message', function (req, res) {
                     }
                 });
             }
-
-        } else {
+        }
+        // isDutch F / number T
+        else {
             if (!isCorrectNumber(selected, difficulty)) {
                 res.json({
                     "message": {
