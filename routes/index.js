@@ -99,15 +99,16 @@ router.post('/message', function (req, res) {
             }
         }
         // 복불복(인원체크) isfair = f / isNumber =t //isdutch = t
-        else if (!isFair) {
-            totalMan = parseInt(selected);
-            if(!isNaN(totalMan)) isNumber = true;
-            res.json({
-                "message": {
-                    "text": "총 금액을 입력해주세요"
-                }
-            });
-        } //복불복 금액체크
+        // else if (!isFair) {
+        //     totalMan = parseInt(selected);
+        //     if(!isNaN(totalMan)) isNumber = true;
+        //     res.json({
+        //         "message": {
+        //             "text": "총 금액을 입력해주세요"
+        //         }
+        //     });
+        // }
+        //복불복 금액체크
         // else {
         //     tempPrice[0] = parseInt(selected);
         //     if (isNaN(tempPrice[0])) {
