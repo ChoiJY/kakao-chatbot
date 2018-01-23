@@ -85,9 +85,12 @@ router.post('/message', function (req, res) {
         tempPrice = tempPrice.split("/");
         tempPrice = tempPrice.splice(0, 2);
         for (var i = 0; i < 2; i++) {
+            // 숫자가 아니면
             if (isNaN(tempPrice[i])) {
                 isNumber = false;
-            } else {
+            }
+            // 숫자면
+            else {
                 isNumber = true;
                 isDutch = true;
             }
@@ -198,16 +201,18 @@ router.post('/message', function (req, res) {
             var totalPrice;
             var mustPaid;
             var rest;
+            var additionalText = "";
+
             totalPrice = tempPrice[0];
             people = tempPrice[1];
-
+            rest = totalPrice % 100;
+            totalPrice -= rest;
             mustPaid = totalPrice / people;
-            rest = mustPaid % 100 * people;
+            if (rest !== 0) additionalText = "\n잔돈 " + rest + " 원은 나머지 한명이..(윙크)";
             res.json({
                 "message": {
                     "text": "더치페이 결과는 아래와 같습니다.\n" +
-                    "각자 " + mustPaid + " 원씩 지불하시면 돼요\n" +
-                    "잔돈 " + rest + " 원은 나머지 한명이..(윙크)"
+                    "각자 " + mustPaid + " 원씩 지불하시면 돼요" + additionalText
                 },
                 "keyboard": {
                     "type": "buttons",
@@ -313,7 +318,7 @@ router.post('/message', function (req, res) {
  */
 function isDuplicate(inputArray) {
     var tempAry;
-    tempAry = inputArray.slice(0, inputArray.length - 1);
+    tempAry = inputArray.slice(0, inputArray.length);
     tempAry.sort();
     for (var i = 1; i < tempAry.length; i++) {
         if (parseInt(tempAry[i]) === parseInt(tempAry[i - 1])) {
