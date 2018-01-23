@@ -158,8 +158,8 @@ router.post('/message', function (req, res) {
         else if (selected === "더치 페이") {
             isDutch = true;
             res.json(dutchPay_start());
-        } else if (selected === "돈은 공정하게 나눠아죠") {
-            res.json(dutchPay_fair());
+        } else if (selected === "돈은 공정하게 나눠야죠") {
+            res.json(dutchPay_fair(isDutch));
         } else if (selected === "복불복") {
             res.json(dutchPay_lotto());
         }
@@ -293,6 +293,7 @@ router.post('/message', function (req, res) {
     isNumber = false;
     tempStr = 0;
     selected = "";
+    isDutch = false;
 });
 
 /**
@@ -427,10 +428,11 @@ function dutchPay_start() {
     };
 }
 
-function dutchPay_fair() {
+function dutchPay_fair(test) {
     var messageForm = {
         "text": "나눌 총 금액과 인원수를 적어주세요\n" +
-        "예시) 15000/4"
+        "예시) 15000/4"+
+        "\n"+test
     };
     return {
         "message": messageForm
