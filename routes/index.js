@@ -87,10 +87,8 @@ router.post('/message', function (req, res) {
             });
         } else if (selected === "더치 페이") {
             res.json({
-                "message": "아직 완성되지 않은 기능이에요.. TT \n" +
-                "조금만 기다려 주세용(찡긋)\n" +
-                "처음으로 돌아갑니다!",
-                "keyboard": keyboard_startBtn
+                "message": {},
+                "keyboard": {}
             })
             //TODO
         } else if (selected === "처음으로 돌아가기" || selected === "처음으로") {
@@ -171,8 +169,8 @@ router.post('/message', function (req, res) {
         if (!isCorrectNumber(selected, difficulty)) {
             res.json({
                 "message": {
-                    "text": "선택하신 " +difficulty+" 와 " +
-                    "입력한 "+selected+" 맞지 않습니다!\n" +
+                    "text": "선택하신 " + difficulty + " 와 " +
+                    "입력한 " + selected + " 맞지 않습니다!\n" +
                     "알맞게 입력해 주세요"
                 }
             })
@@ -236,13 +234,15 @@ router.post('/message', function (req, res) {
         // 오답
         else {
             var temp = userAry.toString().replace(/,/g, '');
-            writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B").then(function (results) {
-            });
-            res.json({
-                "message": {
-                    "text": strike + " S " + ball + " B"
-                }
-            })
+            if (isCorrectNumber(selected, difficulty)) {
+                writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
+                    .then(function (results) {});//TODO 나중에 필요한 logic
+                res.json({
+                    "message": {
+                        "text": strike + " S " + ball + " B"
+                    }
+                })
+            }
         }
     }
 
