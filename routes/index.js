@@ -101,21 +101,31 @@ router.post('/message', function (req, res) {
         }
         // 복불복 이름 배열이나 숫자가 들어옴
         else if (!isFair) {
-            totalMan = dutchPay_peopleCount(selected);
-            // totalMan = parseInt(selected);
-            if (!isNaN(totalMan)) {
-                isNumber = true;
-                isEntered = true;
-            } else {
+            var confirmed = selected.split(' ');
+            if(confirmed.length>1){
+                // 사람이름이란거
                 isNumber = false;
-                // isEntered = false;
+                isEntered = false;
             }
-            // res.json({
-            //     "message": {
-            //         "text": "총 " + totalMan + "명 이군요\n" +
-            //         "총 금액을 입력해주세요"
-            //     }
-            // });
+            else{
+                isEntered = true;
+                isNumber =true;
+                // 가격이란거
+            }
+            // totalMan = dutchPay_peopleCount(selected);
+            // // totalMan = parseInt(selected);
+            // if (!isNaN(totalMan)) { // 사람수가 숫자인거 -> selected str
+            //     isNumber = true;
+            //     isEntered = true;
+            // } else {    // 숫자가 들어온거
+            //     isNumber = false;
+            //     // isEntered = false;
+            // }
+            res.json({
+                "message": {
+                    "text":totalMan + "|" + (typeof totalMan)
+                }
+            });
         }
         // else{
         //     tempPrice[0] = parseInt(selected);
