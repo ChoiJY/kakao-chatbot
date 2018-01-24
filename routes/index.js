@@ -99,7 +99,7 @@ router.post('/message', function (req, res) {
                 else isNumber = true;
             }
         }
-        // 복불복(인원체크) isfair = f / isNumber =t //isdutch = t
+        // 복불복
         else if (!isFair) {
             if(!isEntered){
                 totalMan = parseInt(selected);
@@ -107,7 +107,8 @@ router.post('/message', function (req, res) {
                 isEntered = true;
                 res.json({
                     "message": {
-                        "text": "총 금액을 입력해주세요"
+                        "text": totalMan+"이군요\n" +
+                        "총 금액을 입력해주세요"
                     }
                 });
             }else{
