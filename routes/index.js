@@ -105,7 +105,7 @@ router.post('/message', function (req, res) {
             // totalMan = parseInt(selected);
             if (!isNaN(totalMan)) {
                 isNumber = true;
-                // isEntered = true;
+                isEntered = true;
             } else {
                 isNumber = false;
                 // isEntered = false;
@@ -127,7 +127,7 @@ router.post('/message', function (req, res) {
 
     // 숫자 입력이 아닌 경우
     if (!isNumber) {
-        if (!isFair && isDutch && isEntered) {
+        if (!isFair && isDutch && !isEntered) {
             tempPerson = selected.split(" ");
             tempPerson.forEach(function (item, index) {
                 if (tempPerson[index] === "") {
@@ -274,18 +274,20 @@ router.post('/message', function (req, res) {
             }
             // isfair false
             else {
-                var results = dutchPay_lottoLogic(tempPrice[0], totalMan);
-                var resultFormat = "";
-                for (var i = 0; i < totalMan - 1; i++) {
-                    resultFormat += tempPerson[i] + " 님 " + results[i] + "원\n";
-                }
-                isDutch = false;
-                res.json({
-                    "message": {
-                        "text": "복불복 결과는 아래와 같습니다.\n" +
-                        resultFormat
+                if(isEntered){
+                    var results = dutchPay_lottoLogic(tempPrice[0], totalMan);
+                    var resultFormat = "";
+                    for (var i = 0; i < totalMan - 1; i++) {
+                        resultFormat += tempPerson[i] + " 님 " + results[i] + "원\n";
                     }
-                });
+                    isDutch = false;
+                    res.json({
+                        "message": {
+                            "text": "복불복 결과는 아래와 같습니다.\n" +
+                            resultFormat
+                        }
+                    });
+                }
             }
         }
         // isDutch F / number T
