@@ -110,16 +110,17 @@ router.post('/message', function (req, res) {
                 }
                 res.json({
                     "message": {
-                        "text": totalMan+"이군요\n" +
+                        "text": "총 " +totalMan+"명 이군요\n" +
                         "총 금액을 입력해주세요"
                     }
                 });
-            }else{
-                tempPrice[0] = parseInt(selected);
-                if (isNaN(tempPrice[0])) {
-                    isNumber = false;
-                }
             }
+            // else{
+            //     tempPrice[0] = parseInt(selected);
+            //     if (isNaN(tempPrice[0])) {
+            //         isNumber = false;
+            //     }
+            // }
         }
     }
 
