@@ -246,7 +246,7 @@ router.post('/message', function (req, res) {
     else {
         if (isDutch) { // isNumber = t, isDutch = true
             // 공평하게
-            if (isFair) res.json(dutchPay_fairDivide(tempPrice[0],totalMan));
+            if (isFair) res.json(dutchPay_fairDivide(tempPrice[0], totalMan));
             // isfair false
             else {
                 if (isEntered) {
@@ -507,7 +507,6 @@ function dutchPay_fairDivide(amount, peopleNum) {
     var rest;
     var total = amount;
     var results;
-    var remain;
     var restResult = new String();
 
     rest = total % 1000;
@@ -517,9 +516,10 @@ function dutchPay_fairDivide(amount, peopleNum) {
     if (rest !== 0) {
         restResult = "\n잔돈 " + rest + " 원은 본인이 내는 센스(윙크)";
     }
+    isDutch = false;
     return {
         "message": {
-            "text": "모두에게 공평한 더치페이 결과는\n " +
+            "text": "모두에게 공평한 더치페이 결과는\n" +
             "각자 " + results + " 원 씩(꺄아)" + restResult
         },
         "keyboard": {
