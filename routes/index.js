@@ -246,32 +246,7 @@ router.post('/message', function (req, res) {
     else {
         if (isDutch) { // isNumber = t, isDutch = true
             // 공평하게
-            if (isFair) {
-                var people;
-                var totalPrice;
-                var mustPaid;
-                var rest;
-                var additionalText = "";
-
-                totalPrice = tempPrice[0];
-                people = tempPrice[1];
-                rest = totalPrice % 100;
-                totalPrice -= rest;
-                mustPaid = totalPrice / people;
-                if (rest !== 0) additionalText = "\n잔돈 " + rest + " 원은 나머지 한명이..(윙크)";
-                isDutch = false;
-                res.json({
-                    "message": {
-                        "text": "더치페이 결과는 아래와 같습니다.\n" +
-                        "각자 " + mustPaid + " 원씩 지불하시면 돼요" + additionalText +
-                        "\n" + isDutch
-                    },
-                    "keyboard": {
-                        "type": "buttons",
-                        "buttons": ["처음으로 돌아가기"]
-                    }
-                });
-            }
+            if (isFair) res.json(dutchPay_fairDivide(tempPrice[0],totalMan));
             // isfair false
             else {
                 if (isEntered) {
@@ -528,7 +503,31 @@ function dutchPay_fair() {
         "message": messageForm
     };
 }
+function dutchPay_fairDivide(amount, peopleNum) {
+    var rest;
+    var total = amount;
+    var results;
+    var remain;
+    var restResult = new String();
 
+    rest = total % 1000;
+    total -= rest;
+    results = total / peopleNum;
+
+    if (rest !== 0) {
+        restResult = "\n잔돈 " + rest + " 원은 본인이 내는 센스(윙크)";
+    }
+    return {
+        "message": {
+            "text": "모두에게 공평한 더치페이 결과는\n " +
+            "각자 " + results + " 원 씩(꺄아)" + restResult
+        },
+        "keyboard": {
+            "type": "buttons",
+            "buttons": ["처음으로 돌아가기"]
+        }
+    };
+}
 function dutchPay_lotto() {
     const messageForm = {
         "text": "참여자 이름을 스페이스로 구분해서 " +
