@@ -127,7 +127,7 @@ router.post('/message', function (req, res) {
 
     // 숫자 입력이 아닌 경우
     if (!isNumber) {
-        if (!isFair) {
+        if (!isFair && isDutch && isEntered) {
             tempPerson = selected.split(" ");
             tempPerson.forEach(function (item, index) {
                 if (tempPerson[index] === "") {
