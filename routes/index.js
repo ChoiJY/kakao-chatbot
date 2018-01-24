@@ -62,8 +62,6 @@ router.post('/message', function (req, res) {
     var userKey = req.body.user_key;
     var isNumber = false;
 
-    // isNumber 체크
-    // TODO 숫자 앞에 0 사라지는거
     // 숫자야구
     if (!isDutch) {
         tempStr = parseInt(selected.replace(/[^0-9]/g, ""));
@@ -83,7 +81,7 @@ router.post('/message', function (req, res) {
             }
         }
     }
-    // 금액 체크 더치페이 인 경우 isDutch true
+    // 더치페이
     else {
         // n빵
         if (isFair) {
@@ -99,44 +97,30 @@ router.post('/message', function (req, res) {
                 else isNumber = true;
             }
         }
-        // 복불복 이름 배열이나 숫자가 들어옴
+        // 복불복 (이름들이나 돈)
         else if (!isFair) {
             var confirmed = selected.split(' ');
+            // 사람이름이란거
             if (confirmed.length > 1) {
-                // 사람이름이란거
                 isNumber = false;
                 isEntered = false;
                 isDutch = true;
             }
+            // 가격이란거
             else {
                 tempPrice[0] = parseInt(selected);
                 isEntered = true;
                 isNumber = true;
                 isDutch = true;
-                // 가격이란거
             }
-            // totalMan = dutchPay_peopleCount(selected);
-            // // totalMan = parseInt(selected);
-            // if (!isNaN(totalMan)) { // 사람수가 숫자인거 -> selected str
-            //     isNumber = true;
-            //     isEntered = true;
-            // } else {    // 숫자가 들어온거
-            //     isNumber = false;
-            //     // isEntered = false;
-            // }
-
-            // res.json({
-            //     "message": {
-            //         "text":totalMan + "|" + (typeof totalMan)
-            //     }
-            // });
         }
-        // else{
-        //     tempPrice[0] = parseInt(selected);
-        //     if (isNaN(tempPrice[0])) {
-        //         isNumber = false;
-        //     }
-        // }
+        else {
+            res.json({
+                "message": {
+                    "text": "isFair : " + isFair
+                }
+            })
+        }
     }
 
     // 숫자 입력이 아닌 경우
@@ -156,7 +140,7 @@ router.post('/message', function (req, res) {
                 }
             });
         }
-        else{
+        else {
             if (selected === "숫자 야구 게임") {
                 mongoDB.delete(userKey);
                 mongoDB.save(userKey, ["계속하기"]);
@@ -299,11 +283,11 @@ router.post('/message', function (req, res) {
                     isDutch = false;
                     res.json({
                         "message": {
-                            "text": "복불복 결과는 아래와 같습니다.\n" +
+                            "text": "복불복 결과는 아래와 같습니다.(하하)\n" +
                             resultFormat
                         },
-                        "keyboard":{
-                            "type":"buttons",
+                        "keyboard": {
+                            "type": "buttons",
                             "buttons": ["처음으로 돌아가기"]
                         }
                     });
@@ -356,7 +340,7 @@ router.post('/message', function (req, res) {
                 })
             }
             // 중복아님
-            else{
+            else {
                 // strike / ball / out
                 for (var i = 0; i < aryLength; i++) {
                     if (ranNum.indexOf(userAry[i]) !== -1) {
@@ -393,7 +377,7 @@ router.post('/message', function (req, res) {
                             }
                         })
                     }
-                }    
+                }
             }
         }
 
@@ -525,7 +509,6 @@ function dutchPay_start() {
         "text": "더치페이 기능을 시작합니다.\n" +
         "아래에서 메뉴를 선택해주세요"
     };
-
     const dutchPay_buttons = {
         "type": "buttons",
         "buttons": ["돈은 공정하게 나눠야죠", "복불복"]
@@ -548,7 +531,7 @@ function dutchPay_fair() {
 
 function dutchPay_lotto() {
     const messageForm = {
-        "text": "참석자 이름을 스페이스로 구분해서 " +
+        "text": "참여자 이름을 스페이스로 구분해서 " +
         "적어주세요\n" +
         "예시) 정우성 고수 장동건 "
     };
@@ -556,11 +539,13 @@ function dutchPay_lotto() {
         "message": messageForm
     };
 }
+
 function dutchPay_peopleCount(inputString) {
     var peopleAry = inputString.split(" ");
     var peopleNum = peopleAry.length;
     return peopleNum;
 }
+
 function dutchPay_lottoLogic(amount, peopleNum) {
     var rest = amount % 1000;
     var total = amount - rest;
@@ -570,7 +555,6 @@ function dutchPay_lottoLogic(amount, peopleNum) {
     var returnAry = new Array(peopleNum);
     console.log(rest + " | " + rest2);
     console.log(mustPaid + " | " + total);
-
     for (var i = 0; i < returnAry.length; i++) {
         returnAry[i] = mustPaid;
     }
@@ -580,17 +564,25 @@ function dutchPay_lottoLogic(amount, peopleNum) {
         for (var i = 0; i < returnAry.length; i++) {
             if (i === luckyMan) continue;
             else {
-                returnAry[i] += (remain / (peopleNum - 1));
-                returnAry[i] += (rest / (peopleNum - 1));
+                returnAry[i] += parseInt(remain / (peopleNum - 1));
+                returnAry[i] += parseInt(rest / (peopleNum - 1));
             }
         }
 
     } else {
-        returnAry[getRandomIntInclusive(0, peopleNum - 1)] += (remain + rest);
+        returnAry[getRandomIntInclusive(0, peopleNum - 1)] += parseInt(remain + rest);
     }
     return returnAry;
 }
 
+// make to Debug
+function makeDebug(err) {
+    return {
+        "message": {
+            "text": err
+        }
+    };
+}
 const message_gameRule = "\n[게임설명]\n" +
     "- 숫자야구는 정한 난이도에 맞는 숫자조합을 맞추는 게임입니다.\n" +
     "- 숫자와 자리가 일치 시에는 1Strike 증가, 숫자만 일치하고 자리는 불일치시 1Ball증가합니다.\n\n" +
