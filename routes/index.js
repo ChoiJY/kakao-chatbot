@@ -107,7 +107,7 @@ router.post('/message', function (req, res) {
         else if (!isFair) {
             var confirmed = selected.split(' ');
             // 사람이름이란거
-            if (confirmed.length >= 1) {
+            if (confirmed.length > 1) {
                 isNumber = false;
                 isEntered = false;
                 isDutch = true;
