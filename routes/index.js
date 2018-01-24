@@ -155,103 +155,105 @@ router.post('/message', function (req, res) {
                 }
             });
         }
-        if (selected === "숫자 야구 게임") {
-            mongoDB.delete(userKey);
-            mongoDB.save(userKey, ["계속하기"]);
-            res.json({
-                "message": message_numHello,
-                "keyboard": keyboard_numSelectBtn
-            });
-        } else if (selected === "처음으로 돌아가기" || selected === "처음으로") {
-            isDutch = false;
-            isEntered = false;
-            isFair = false;
-            res.json({
-                "message": {
-                    "text": "메뉴 선택 화면으로 돌아갑니다"
-                },
-                "keyboard": keyboard_startBtn
-            })
-        } else if (selected === "쉬움") {
-            ranNum = makeRandomNumber(3);
-            count = strike = ball = out = 0;
-            difficulty = "easy";
-            res.json({
-                "message": {
-                    "text": "3자리 야구게임을 시작하셨네요.\n" + message_gameRule,
-                    "message_button": messageBtn_homeLink
-                }
-            })
-        } else if (selected === "어려움") {
-            ranNum = makeRandomNumber(4);
-            count = strike = ball = out = 0;
-            difficulty = "hard";
-            res.json({
-                "message": {
-                    "text": "4자리 야구게임을 시작하셨네요.(놀람)\n" + message_gameRule,
-                    "message_button": messageBtn_homeLink
-                }
-            })
-        } else if (selected === "매우 어려움") {
-            ranNum = makeRandomNumber(5);
-            count = strike = ball = out = 0;
-            difficulty = "hell";
-            res.json({
-                "message": {
-                    "text": "5자리 야구게임을 시작하셨네요.(놀람)(놀람)\n" + message_gameRule,
-                    "message_button": messageBtn_homeLink
-                }
-            })
-        } else if (selected === "기록") {
-            checkMyScore(userKey).then(function (results) {
-                // var temp = results.toString().replace(/,/g, '');
+        else{
+            if (selected === "숫자 야구 게임") {
+                mongoDB.delete(userKey);
+                mongoDB.save(userKey, ["계속하기"]);
+                res.json({
+                    "message": message_numHello,
+                    "keyboard": keyboard_numSelectBtn
+                });
+            } else if (selected === "처음으로 돌아가기" || selected === "처음으로") {
+                isDutch = false;
+                isEntered = false;
+                isFair = false;
                 res.json({
                     "message": {
-                        "text": "지금까지의 기록은 아래 버튼을 확인하세요\n" +
-                        "확인하신 후 계속하기를 눌러주세요"
-                    },
-                    "keyboard": {
-                        "type": "buttons",
-                        "buttons": results
-                    }
-                })
-            })
-        } else if (selected === "계속하기") {
-            res.json({
-                "message": {
-                    "text": "다음 숫자를 입력해주세요!"
-                }
-            })
-        }
-        // dutchpay
-        else if (selected === "더치 페이") {
-            res.json(dutchPay_start());
-        } else if (selected === "돈은 공정하게 나눠야죠") {
-            isDutch = true;
-            isFair = true;
-            res.json(dutchPay_fair());
-        } else if (selected === "복불복") {
-            isEntered = false;
-            isDutch = true;
-            isFair = false;
-            res.json(dutchPay_lotto());
-        }
-
-        // input error & comeback home menu
-        else {
-            if (selected === "포기") {
-                res.json({
-                    "message": {
-                        "text": "처음으로 돌아갑니다"
+                        "text": "메뉴 선택 화면으로 돌아갑니다"
                     },
                     "keyboard": keyboard_startBtn
                 })
-            } else {
+            } else if (selected === "쉬움") {
+                ranNum = makeRandomNumber(3);
+                count = strike = ball = out = 0;
+                difficulty = "easy";
                 res.json({
                     "message": {
-                        "text": "잘못 입력하셨어요." + isNumber + " " + isDutch
+                        "text": "3자리 야구게임을 시작하셨네요.\n" + message_gameRule,
+                        "message_button": messageBtn_homeLink
                     }
                 })
+            } else if (selected === "어려움") {
+                ranNum = makeRandomNumber(4);
+                count = strike = ball = out = 0;
+                difficulty = "hard";
+                res.json({
+                    "message": {
+                        "text": "4자리 야구게임을 시작하셨네요.(놀람)\n" + message_gameRule,
+                        "message_button": messageBtn_homeLink
+                    }
+                })
+            } else if (selected === "매우 어려움") {
+                ranNum = makeRandomNumber(5);
+                count = strike = ball = out = 0;
+                difficulty = "hell";
+                res.json({
+                    "message": {
+                        "text": "5자리 야구게임을 시작하셨네요.(놀람)(놀람)\n" + message_gameRule,
+                        "message_button": messageBtn_homeLink
+                    }
+                })
+            } else if (selected === "기록") {
+                checkMyScore(userKey).then(function (results) {
+                    // var temp = results.toString().replace(/,/g, '');
+                    res.json({
+                        "message": {
+                            "text": "지금까지의 기록은 아래 버튼을 확인하세요\n" +
+                            "확인하신 후 계속하기를 눌러주세요"
+                        },
+                        "keyboard": {
+                            "type": "buttons",
+                            "buttons": results
+                        }
+                    })
+                })
+            } else if (selected === "계속하기") {
+                res.json({
+                    "message": {
+                        "text": "다음 숫자를 입력해주세요!"
+                    }
+                })
+            }
+            // dutchpay
+            else if (selected === "더치 페이") {
+                res.json(dutchPay_start());
+            } else if (selected === "돈은 공정하게 나눠야죠") {
+                isDutch = true;
+                isFair = true;
+                res.json(dutchPay_fair());
+            } else if (selected === "복불복") {
+                isEntered = false;
+                isDutch = true;
+                isFair = false;
+                res.json(dutchPay_lotto());
+            }
+
+            // input error & comeback home menu
+            else {
+                if (selected === "포기") {
+                    res.json({
+                        "message": {
+                            "text": "처음으로 돌아갑니다"
+                        },
+                        "keyboard": keyboard_startBtn
+                    })
+                } else {
+                    res.json({
+                        "message": {
+                            "text": "잘못 입력하셨어요." + isNumber + " " + isDutch
+                        }
+                    })
+                }
             }
         }
     }
