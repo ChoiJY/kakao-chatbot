@@ -83,7 +83,7 @@ router.post('/message', function (req, res) {
             }
         }
     }
-    // 금액 체크 더치페이 인 경우
+    // 금액 체크 더치페이 인 경우 isDutch true
     else {
         // n빵
         if (isFair) {
@@ -121,11 +121,12 @@ router.post('/message', function (req, res) {
             //     isNumber = false;
             //     // isEntered = false;
             // }
-            res.json({
-                "message": {
-                    "text":totalMan + "|" + (typeof totalMan)
-                }
-            });
+
+            // res.json({
+            //     "message": {
+            //         "text":totalMan + "|" + (typeof totalMan)
+            //     }
+            // });
         }
         // else{
         //     tempPrice[0] = parseInt(selected);
