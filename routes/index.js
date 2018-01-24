@@ -91,7 +91,7 @@ router.post('/message', function (req, res) {
             tempPrice = tempPrice.splice(0, 2);
             for (var i = 0; i < tempPrice.length; i++) {
                 // 숫자가 아니면
-                if (isNaN(tempPrice[i])) {
+                if (isNaN(tempPrice[i]) || tempPrice[i] === "") {
                     isNumber = false;
                     res.json({
                         "message": {
@@ -114,7 +114,7 @@ router.post('/message', function (req, res) {
             }
             // 가격이란거
             else {
-                if (isNaN(selected)) {
+                if (isNaN(confirmed[0])) {
                     isEntered = false;
                     isNumber = false;
                     isDutch = true;
@@ -124,7 +124,7 @@ router.post('/message', function (req, res) {
                         }
                     });
                 } else {
-                    tempPrice[0] = parseInt(selected);
+                    tempPrice[0] = parseInt(confirmed[0]);
                     isEntered = true;
                     isNumber = true;
                     isDutch = true;
@@ -153,7 +153,7 @@ router.post('/message', function (req, res) {
             totalMan = tempPerson.length;
             res.json({
                 "message": {
-                    "text": totalMan + "명 이시군요\n" +
+                    "text": "총 " +totalMan + "명 이시군요\n" +
                     "총 금액을 입력해주세요"
                 }
             });
