@@ -209,6 +209,7 @@ router.post('/message', function (req, res) {
             isFair = true;
             res.json(dutchPay_fair());
         } else if (selected === "복불복") {
+            isEntered = false;
             isDutch = true;
             isFair = false;
             res.json(dutchPay_lotto());
