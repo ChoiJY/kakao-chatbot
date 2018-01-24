@@ -102,9 +102,12 @@ router.post('/message', function (req, res) {
         // 복불복
         else if (!isFair) {
             if(!isEntered){
-                totalMan = parseInt(selected);
-                if(!isNaN(totalMan)) isNumber = true;
-                isEntered = true;
+                totalMan = dutchPay_peopleCount(selected);
+                // totalMan = parseInt(selected);
+                if(!isNaN(totalMan)){
+                    isNumber = true;
+                    isEntered = true;
+                }
                 res.json({
                     "message": {
                         "text": totalMan+"이군요\n" +
@@ -522,7 +525,11 @@ function dutchPay_lotto() {
         "message": messageForm
     };
 }
-
+function dutchPay_peopleCount(inputString){
+    var peopleAry = inputString.split(" ");
+    var peopleNum = peopleAry.length;
+    return peopleNum;
+}
 function dutchPay_lottoLogic(amount, peopleNum) {
     var rest = amount % 1000;
     var total = amount - rest;
