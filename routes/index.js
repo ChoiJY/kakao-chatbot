@@ -107,7 +107,7 @@ router.post('/message', function (req, res) {
         else if (!isFair) {
             var confirmed = selected.split(' ');
             // 사람이름이란거
-            if (confirmed.length > 1) {
+            if (confirmed.length >= 1) {
                 isNumber = false;
                 isEntered = false;
                 isDutch = true;
@@ -120,7 +120,8 @@ router.post('/message', function (req, res) {
                     isDutch = true;
                     res.json({
                         "message": {
-                            "text": "금액은 숫자만 입력해 주세요"
+                            "text": "금액은 숫자만 입력해 주세요\n" +
+                            "다시 입력해 주세요"
                         }
                     });
                 } else {
@@ -154,7 +155,7 @@ router.post('/message', function (req, res) {
             res.json({
                 "message": {
                     "text": "총 " +totalMan + "명 이시군요\n" +
-                    "총 금액을 입력해주세요"
+                    "복불복 하실 금액을 입력해주세요"
                 }
             });
         }
