@@ -47,8 +47,6 @@ const messageBtn_homeLink = {
 };
 /* test 용도 */
 router.get('/', function (req, res, next) {
-    console.log(isCorrectNumber("123", "easy"))
-    res.json(dutchPay_start());
 });
 
 // keyboard init
@@ -96,8 +94,8 @@ router.post('/message', function (req, res) {
                 if (isNaN(tempPrice[i])) {
                     isNumber = false;
                     res.json({
-                        "message":{
-                            "text":"금액과 사람 수는 숫자만 돼요"
+                        "message": {
+                            "text": "금액과 사람 수는 숫자만 돼요"
                         }
                     });
                     break;
@@ -155,7 +153,7 @@ router.post('/message', function (req, res) {
             totalMan = tempPerson.length;
             res.json({
                 "message": {
-                    "text": totalMan + "이시군요\n" +
+                    "text": totalMan + "명 이시군요\n" +
                     "총 금액을 입력해주세요"
                 }
             });
@@ -255,7 +253,7 @@ router.post('/message', function (req, res) {
                 } else {
                     res.json({
                         "message": {
-                            "text": "잘못 입력하셨어요." + isNumber + " " + isDutch
+                            "text": "잘못 입력하셨어요."
                         }
                     })
                 }
