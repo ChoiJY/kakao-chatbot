@@ -114,7 +114,7 @@ router.post('/message', function (req, res) {
             }
             // 가격이란거
             else {
-                if (isNaN(confirmed[0])) {
+                if (isNaN(selected)) {
                     isEntered = false;
                     isNumber = false;
                     isDutch = true;
@@ -125,7 +125,7 @@ router.post('/message', function (req, res) {
                         }
                     });
                 } else {
-                    tempPrice[0] = parseInt(confirmed[0]);
+                    tempPrice[0] = parseInt(selected);
                     isEntered = true;
                     isNumber = true;
                     isDutch = true;
