@@ -507,14 +507,30 @@ function dutchPay_fair() {
     };
 }
 function dutchPay_fairDivide(amount, peopleNum) {
-    var rest;
+    var rest = 0;
     var total = amount;
-    var results;
-    var restResult = new String();
+    var results = 0;
+    var restResult = "";
 
-    rest = total % 1000;
-    total -= rest;
-    results = total / peopleNum;
+    // new logic
+    // 1원단위 더러운
+    if (amount % 10 !== 0) {
+        rest += (amount % 10);
+        amount -= rest;
+        total = amount / 10;
+    }
+    // 정상적인 단위
+    else {
+        total = amount / 10;
+    }
+
+    // 나눠떨어지지 않을때
+    if ((total % peopleNum) !== 0) {
+        rest += (total % peopleNum) * 10;
+        results = (total - (total % peopleNum)) / peopleNum;
+    } else {
+        results = total / peopleNum;
+    }
 
     if (rest !== 0) {
         restResult = "\n잔돈 " + rest + " 원은 본인이 내는 센스(윙크)";
@@ -522,7 +538,7 @@ function dutchPay_fairDivide(amount, peopleNum) {
     return {
         "message": {
             "text": "모두에게 공평한 더치페이 결과는\n" +
-            "각자 " + results + " 원 씩(꺄아)" + restResult
+            "각자 " + results * 10 + " 원 씩(꺄아)" + restResult
         },
         "keyboard": {
             "type": "buttons",
