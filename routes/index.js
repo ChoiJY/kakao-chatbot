@@ -65,6 +65,9 @@ router.post('/message', function (req, res) {
     // 숫자야구
     if (!isDutch) {
         tempStr = parseInt(selected.replace(/[^0-9]/g, ""));
+        if (isNaN(tempStr)) {
+            isNumber = false;
+        }
         if (tempStr >= 0 && tempStr < 100000) {
             for (var i = 0; i < tempAry.length; i++) {
                 tempAry[i] = Math.floor(tempStr / Math.pow(10, tempAry.length - 1 - i));
@@ -92,6 +95,11 @@ router.post('/message', function (req, res) {
                 // 숫자가 아니면
                 if (isNaN(tempPrice[i])) {
                     isNumber = false;
+                    res.json({
+                        "message":{
+                            "text":"금액과 사람 수는 숫자만 돼요"
+                        }
+                    });
                     break;
                 }
                 else isNumber = true;
@@ -108,12 +116,24 @@ router.post('/message', function (req, res) {
             }
             // 가격이란거
             else {
-                tempPrice[0] = parseInt(selected);
-                isEntered = true;
-                isNumber = true;
-                isDutch = true;
+                if (isNaN(selected)) {
+                    isEntered = false;
+                    isNumber = false;
+                    isDutch = true;
+                    res.json({
+                        "message": {
+                            "text": "금액은 숫자만 입력해 주세요"
+                        }
+                    });
+                } else {
+                    tempPrice[0] = parseInt(selected);
+                    isEntered = true;
+                    isNumber = true;
+                    isDutch = true;
+                }
             }
         }
+        // TODO error handle logic
         else {
             res.json({
                 "message": {
@@ -538,7 +558,7 @@ function dutchPay_fairDivide(amount, peopleNum) {
     return {
         "message": {
             "text": "모두에게 공평한 더치페이 결과는\n" +
-            "각자 " + results * 10 + " 원 씩(꺄아)" + restResult
+            "각자 " + results * 10 + " 원 씩 입니다." + restResult
         },
         "keyboard": {
             "type": "buttons",
@@ -570,8 +590,7 @@ function dutchPay_lottoLogic(amount, peopleNum) {
     var mustPaid = (total - rest2 * peopleNum) / peopleNum;
     var remain = rest2 * peopleNum;
     var returnAry = new Array(peopleNum);
-    console.log(rest + " | " + rest2);
-    console.log(mustPaid + " | " + total);
+
     for (var i = 0; i < returnAry.length; i++) {
         returnAry[i] = mustPaid;
     }
