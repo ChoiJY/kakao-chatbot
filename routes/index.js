@@ -106,7 +106,7 @@ router.post('/message', function (req, res) {
             if (!isNaN(totalMan)) {
                 isNumber = true;
                 // isEntered = true;
-            }else{
+            } else {
                 isNumber = false;
                 // isEntered = false;
             }
@@ -137,7 +137,7 @@ router.post('/message', function (req, res) {
             totalMan = tempPerson.length;
             res.json({
                 "message": {
-                    "text": totalMan +"이시군요\n"+
+                    "text": totalMan + "이시군요\n" +
                     "총 금액을 입력해주세요"
                 }
             });
@@ -151,6 +151,8 @@ router.post('/message', function (req, res) {
             });
         } else if (selected === "처음으로 돌아가기" || selected === "처음으로") {
             isDutch = false;
+            isEntered = false;
+            isFair = false;
             res.json({
                 "message": {
                     "text": "메뉴 선택 화면으로 돌아갑니다"
