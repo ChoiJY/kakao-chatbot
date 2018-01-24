@@ -115,12 +115,12 @@ router.post('/message', function (req, res) {
             // 가격이란거
             else {
                 if (isNaN(selected)) {
-                    isEntered = false;
-                    isNumber = false;
-                    isDutch = true;
+                    // isEntered = false;
+                    // isNumber = false;
+                    // isDutch = true;
                     res.json({
                         "message": {
-                            "text": "금액은 숫자만 입력해 주세요\n" +
+                            "text": "잘못 입력하셨어요\n" +
                             "다시 입력해 주세요"
                         }
                     });
