@@ -102,14 +102,16 @@ router.post('/message', function (req, res) {
         // 복불복 이름 배열이나 숫자가 들어옴
         else if (!isFair) {
             var confirmed = selected.split(' ');
-            if(confirmed.length>1){
+            if (confirmed.length > 1) {
                 // 사람이름이란거
                 isNumber = false;
                 isEntered = false;
+                isDutch = true;
             }
-            else{
+            else {
                 isEntered = true;
-                isNumber =true;
+                isNumber = true;
+                isDutch = true;
                 // 가격이란거
             }
             // totalMan = dutchPay_peopleCount(selected);
@@ -285,7 +287,7 @@ router.post('/message', function (req, res) {
             }
             // isfair false
             else {
-                if(isEntered){
+                if (isEntered) {
                     var results = dutchPay_lottoLogic(tempPrice[0], totalMan);
                     var resultFormat = "";
                     for (var i = 0; i < totalMan - 1; i++) {
