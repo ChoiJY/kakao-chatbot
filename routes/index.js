@@ -21,6 +21,7 @@ var totalMan;
 
 var isDutch = false;
 var isFair = true;
+var isEntered = false;
 // server쪽 난수 저장
 var ranNum;
 
@@ -99,22 +100,23 @@ router.post('/message', function (req, res) {
             }
         }
         // 복불복(인원체크) isfair = f / isNumber =t //isdutch = t
-        // else if (!isFair) {
-        //     totalMan = parseInt(selected);
-        //     if(!isNaN(totalMan)) isNumber = true;
-        //     res.json({
-        //         "message": {
-        //             "text": "총 금액을 입력해주세요"
-        //         }
-        //     });
-        // }
-        //복불복 금액체크
-        // else {
-        //     tempPrice[0] = parseInt(selected);
-        //     if (isNaN(tempPrice[0])) {
-        //         isNumber = false;
-        //     }
-        // }
+        else if (!isFair) {
+            if(!isEntered){
+                totalMan = parseInt(selected);
+                if(!isNaN(totalMan)) isNumber = true;
+                isEntered = true;
+                res.json({
+                    "message": {
+                        "text": "총 금액을 입력해주세요"
+                    }
+                });
+            }else{
+                tempPrice[0] = parseInt(selected);
+                if (isNaN(tempPrice[0])) {
+                    isNumber = false;
+                }
+            }
+        }
     }
 
     // 숫자 입력이 아닌 경우
@@ -260,7 +262,7 @@ router.post('/message', function (req, res) {
                     }
                 });
             }
-            //복불복
+            // isfair false
             else {
                 var results = dutchPay_lottoLogic(tempPrice[0], totalMan);
                 var resultFormat = "";
