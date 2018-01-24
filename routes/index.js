@@ -346,6 +346,7 @@ router.post('/message', function (req, res) {
                 }
             }
             strike = ball = out = 0;
+            // 중복
             if (isDuplicate(userAry)) {
                 res.json({
                     "message": {
@@ -354,42 +355,45 @@ router.post('/message', function (req, res) {
                     }
                 })
             }
-            // strike / ball / out
-            for (var i = 0; i < aryLength; i++) {
-                if (ranNum.indexOf(userAry[i]) !== -1) {
-                    if (ranNum[i] === userAry[i]) strike += 1;
-                    else ball += 1;
-                }
-                else out += 1;
-            }
-            count += 1;
-            // 정답
-            if (strike === aryLength) {
-                mongoDB.delete(userKey).then(function (results) {
-                });
-                res.json({
-                    "message": {
-                        "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
-                    },
-                    "keyboard": {
-                        "type": "buttons",
-                        "buttons": ["처음으로 돌아가기"]
+            // 중복아님
+            else{
+                // strike / ball / out
+                for (var i = 0; i < aryLength; i++) {
+                    if (ranNum.indexOf(userAry[i]) !== -1) {
+                        if (ranNum[i] === userAry[i]) strike += 1;
+                        else ball += 1;
                     }
-                })
-            }
-            // 오답
-            else {
-                var temp = userAry.toString().replace(/,/g, '');
-                if (isCorrectNumber(selected, difficulty)) {
-                    writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
-                        .then(function (results) {
-                        });//TODO 나중에 필요한 logic
+                    else out += 1;
+                }
+                count += 1;
+                // 정답
+                if (strike === aryLength) {
+                    mongoDB.delete(userKey).then(function (results) {
+                    });
                     res.json({
                         "message": {
-                            "text": strike + " S " + ball + " B"
+                            "text": "(우와)" + "홈런입니다!! " + count + "번 만에 맞추셨네요"
+                        },
+                        "keyboard": {
+                            "type": "buttons",
+                            "buttons": ["처음으로 돌아가기"]
                         }
                     })
                 }
+                // 오답
+                else {
+                    var temp = userAry.toString().replace(/,/g, '');
+                    if (isCorrectNumber(selected, difficulty)) {
+                        writeMyScore(userKey, temp + " " + "" + strike + "S " + ball + "B")
+                            .then(function (results) {
+                            });//TODO 나중에 필요한 logic
+                        res.json({
+                            "message": {
+                                "text": strike + " S " + ball + " B"
+                            }
+                        })
+                    }
+                }    
             }
         }
 
