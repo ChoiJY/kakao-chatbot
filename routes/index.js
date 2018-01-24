@@ -292,7 +292,7 @@ router.post('/message', function (req, res) {
                 if (isEntered) {
                     var results = dutchPay_lottoLogic(tempPrice[0], totalMan);
                     var resultFormat = "";
-                    for (var i = 0; i < totalMan - 1; i++) {
+                    for (var i = 0; i < totalMan; i++) {
                         resultFormat += tempPerson[i] + " 님 " + results[i] + "원\n";
                     }
                     isDutch = false;
