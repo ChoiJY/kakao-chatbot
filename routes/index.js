@@ -99,29 +99,30 @@ router.post('/message', function (req, res) {
                 else isNumber = true;
             }
         }
-        // 복불복
+        // 복불복 이름 배열이나 숫자가 들어옴
         else if (!isFair) {
-            if(!isEntered){
-                totalMan = dutchPay_peopleCount(selected);
-                // totalMan = parseInt(selected);
-                if(!isNaN(totalMan)){
-                    isNumber = true;
-                    isEntered = true;
-                }
-                res.json({
-                    "message": {
-                        "text": "총 " +totalMan+"명 이군요\n" +
-                        "총 금액을 입력해주세요"
-                    }
-                });
+            totalMan = dutchPay_peopleCount(selected);
+            // totalMan = parseInt(selected);
+            if (!isNaN(totalMan)) {
+                isNumber = true;
+                // isEntered = true;
+            }else{
+                isNumber = false;
+                // isEntered = false;
             }
-            // else{
-            //     tempPrice[0] = parseInt(selected);
-            //     if (isNaN(tempPrice[0])) {
-            //         isNumber = false;
+            // res.json({
+            //     "message": {
+            //         "text": "총 " + totalMan + "명 이군요\n" +
+            //         "총 금액을 입력해주세요"
             //     }
-            // }
+            // });
         }
+        // else{
+        //     tempPrice[0] = parseInt(selected);
+        //     if (isNaN(tempPrice[0])) {
+        //         isNumber = false;
+        //     }
+        // }
     }
 
     // 숫자 입력이 아닌 경우
@@ -136,7 +137,8 @@ router.post('/message', function (req, res) {
             totalMan = tempPerson.length;
             res.json({
                 "message": {
-                    "text": "총 금액을 입력해주세요"
+                    "text": totalMan +"이시군요\n"+
+                    "총 금액을 입력해주세요"
                 }
             });
         }
@@ -526,7 +528,7 @@ function dutchPay_lotto() {
         "message": messageForm
     };
 }
-function dutchPay_peopleCount(inputString){
+function dutchPay_peopleCount(inputString) {
     var peopleAry = inputString.split(" ");
     var peopleNum = peopleAry.length;
     return peopleNum;
