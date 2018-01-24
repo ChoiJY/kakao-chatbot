@@ -109,6 +109,7 @@ router.post('/message', function (req, res) {
                 isDutch = true;
             }
             else {
+                tempPrice[0] = parseInt(selected);
                 isEntered = true;
                 isNumber = true;
                 isDutch = true;
@@ -300,6 +301,10 @@ router.post('/message', function (req, res) {
                         "message": {
                             "text": "복불복 결과는 아래와 같습니다.\n" +
                             resultFormat
+                        },
+                        "keyboard":{
+                            "type":"buttons",
+                            "buttons": ["처음으로 돌아가기"]
                         }
                     });
                 }
