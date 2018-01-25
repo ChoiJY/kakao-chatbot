@@ -32,7 +32,7 @@ const keyboard_numSelectBtn = {
 
 const keyboard_startBtn = {
     "type": "buttons",
-    "buttons": ["숫자 야구 게임", "더치 페이"]
+    "buttons": ["숫자 야구 게임", "더치 페이", "수도 맞추기"]
 };
 
 const message_numHello = {
@@ -154,7 +154,7 @@ router.post('/message', function (req, res) {
             totalMan = tempPerson.length;
             res.json({
                 "message": {
-                    "text": "총 " +totalMan + "명 이시군요\n" +
+                    "text": "총 " + totalMan + "명 이시군요\n" +
                     "복불복 하실 금액을 입력해주세요"
                 }
             });
@@ -240,6 +240,19 @@ router.post('/message', function (req, res) {
                 isDutch = true;
                 isFair = false;
                 res.json(dutchPay_lotto());
+            }
+            // 수도 맞추기
+            else if (selected === "수도 맞추기") {
+                res.json({
+                    "message": {
+                        "text": "아직 개발중이에요 TT 조금만 기다려주세용" +
+                        "🇦🇱 🇦🇱 🇧🇪 🇧🇷 🇬🇧 🇲🇽"
+                    },
+                    "keyboard": {
+                        "type": "buttons",
+                        "buttons": ["처음으로 돌아가기"]
+                    }
+                })
             }
 
             // input error & comeback home menu
@@ -608,6 +621,15 @@ function dutchPay_lottoLogic(amount, peopleNum) {
         returnAry[getRandomIntInclusive(0, peopleNum - 1)] += parseInt(remain + rest);
     }
     return returnAry;
+}
+
+// 수도맞추기 logics
+function quizCapital_start() {
+    const messageForm = {
+        "text": "수도 맞추기 퀴즈를 시작합니다!!\n" +
+        "총 10문제로 되어있으며 도중에 그만두고 싶으시면" +
+        "[그만]을 입력해주세요"
+    }
 }
 
 // make to Debug
